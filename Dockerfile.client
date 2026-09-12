@@ -3,31 +3,39 @@ FROM emscripten/emsdk:latest AS builder
 
 WORKDIR /src
 
-# Install build dependencies including OpenSSL, libcurl, pkg-config, and zlib
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
     git \
     cmake \
     build-essential \
     python3 \
     pkg-config \
-    libssl-dev \
-    libcurl4-openssl-dev \
+    wget \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Build OpenSSL for WebAssembly (WASM static libraries)
+WORKDIR /src/openssl
+RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.0.13/openssl-3.0.13.tar.gz && \
+    tar -xzf openssl-3.0.13.tar.gz && \
+    cd openssl-3.0.13 && \
+    emconfigure ./Configure linux-generic32 no-shared no-asm no-threads --prefix=/opt/openssl-wasm && \
+    emmake make -j$(nproc) && \
+    emmake make install_sw
+
 # Clone MuMain repository and submodules
+WORKDIR /src
 RUN git clone --recursive https://github.com/sven-n/MuMain.git mumain
 
 WORKDIR /src/mumain
 
-# Build script with WASM compilation
+# Build script with WASM compilation pointing to the WASM OpenSSL installation
 RUN emcmake cmake -B build-wasm \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_EDITOR=OFF \
-    -DOPENSSL_ROOT_DIR=/usr \
-    || true
+    -DOPENSSL_ROOT_DIR=/opt/openssl-wasm
 
-RUN cmake --build build-wasm --target Main -j$(nproc) || true
+RUN cmake --build build-wasm --target Main -j$(nproc)
 
 # Stage 2: Serve WebAssembly assets via NGINX
 FROM nginx:alpine
@@ -35,9 +43,9 @@ FROM nginx:alpine
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY ./public /usr/share/nginx/html
 
-# Copy compiled WASM and JS glue code if built, or create empty placeholders for volume mounting
-COPY --from=builder /src/mumain/build-wasm/src/Main.js* /usr/share/nginx/html/client.js
-COPY --from=builder /src/mumain/build-wasm/src/Main.wasm* /usr/share/nginx/html/client.wasm
+# Copy compiled WASM and JS glue code
+COPY --from=builder /src/mumain/build-wasm/src/Main.js /usr/share/nginx/html/client.js
+COPY --from=builder /src/mumain/build-wasm/src/Main.wasm /usr/share/nginx/html/client.wasm
 
 EXPOSE 80 443
 
