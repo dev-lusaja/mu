@@ -62,7 +62,7 @@ services:
       dockerfile: Dockerfile.client
     container_name: mu-client-web
     ports:
-      - "80:80"
+      - "90:80"
       - "443:443"
     volumes:
       - ./public:/usr/share/nginx/html

@@ -21,7 +21,7 @@ A continuación se detallan los puertos utilizados por la infraestructura y su f
 
 | Puerto Interno | Puerto Host (Exposición) | Servicio | Protocolo | Descripción / Uso |
 | :---: | :---: | :---: | :---: | :--- |
-| **80 / 443** | `80 / 443` | `mu-client-web` | HTTP / HTTPS | Servidor Web NGINX. Sirve el cliente en navegador HTML5/Canvas, los archivos `client.js`, `client.wasm` y los assets del juego. |
+| **80 / 443** | `90 / 443` | `mu-client-web` | HTTP / HTTPS | Servidor Web NGINX (Expuesto en el puerto 90 del Host). Sirve el cliente en navegador HTML5/Canvas, los archivos `client.js`, `client.wasm` y los assets del juego. |
 | **8080** | `8080` | `mu-ws-proxy` | WebSocket (WS/WSS) | Puerto de entrada del Proxy WebSocket. El cliente web se conecta aquí para transmitir los paquetes de red. |
 | **44405** | `44405` | `mu-server` | TCP | **ConnectServer** de OpenMU. Recibe las solicitudes iniciales de lista de servidores y redirección. |
 | **55901** | `55901` | `mu-server` | TCP | **GameServer (Server 1)** de OpenMU. Procesa el bucle principal del juego, mapas, combate e interacciones. |
@@ -67,15 +67,16 @@ docker compose ps
 
 ### 3. Acceso desde el Navegador
 
-* **Cliente Web (Juego)**: [http://localhost](http://localhost)
+* **Cliente Web (Juego)**: [http://localhost:90](http://localhost:90)
 * **Panel de Administración OpenMU**: [http://localhost:8090](http://localhost:8090)
 * **Proxy WebSocket**: `ws://localhost:8080`
 
 ---
 
-## 🛠️ Compilación del Cliente WebAssembly (`client.wasm`)
+## 🛠️ Compilación del Cliente WebAssembly (`client.wasm`) y Persistencia en Disco
 
 El servicio `mu-client-web` utiliza una compilación multietapa en Docker (`Dockerfile.client`) basada en la imagen oficial `emscripten/emsdk:latest`.
+Los archivos compilados `client.wasm` y `client.js` se persisten en el directorio host `./public` mediante el volumen montado en Docker Compose, de modo que en ejecuciones posteriores no es necesario recompilar el cliente desde cero.
 
 Si deseas compilar manualmente el cliente C++ a WebAssembly en tu máquina local:
 
