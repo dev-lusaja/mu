@@ -1,0 +1,76 @@
+services:
+  mu-db:
+    image: postgres:15-alpine
+    container_name: mu-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-openmu}
+      POSTGRES_USER: ${POSTGRES_USER:-openmu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-openmu}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mu-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-openmu} -d ${POSTGRES_DB:-openmu}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mu-server:
+    image: munique/openmu
+    container_name: mu-server
+    depends_on:
+      mu-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: mu-db
+      DB_ADMIN_USER: ${POSTGRES_USER:-openmu}
+      DB_ADMIN_PW: ${POSTGRES_PASSWORD:-openmu}
+    ports:
+      - "8090:80"
+      - "44405:44405"
+      - "55901:55901"
+    command: ["-autostart"]
+    networks:
+      - mu-network
+
+  mu-ws-proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: mu-ws-proxy
+    depends_on:
+      - mu-server
+    environment:
+      WS_PORT: 8080
+      WS_HOST: "0.0.0.0"
+      MU_CONNECT_HOST: "mu-server"
+      MU_CONNECT_PORT: 44405
+      MU_GAME_HOST: "mu-server"
+      PROXY_PUBLIC_HOST: "127.0.0.1"
+      PROXY_PUBLIC_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - mu-network
+
+  mu-client-web:
+    image: nginx:alpine
+    container_name: mu-client-web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/usr/share/nginx/html:ro
+    networks:
+      - mu-network
+
+volumes:
+  postgres_data:
+
+networks:
+  mu-network:
+    driver: bridge
