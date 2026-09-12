@@ -57,14 +57,13 @@ services:
       - mu-network
 
   mu-client-web:
-    image: nginx:alpine
+    build:
+      context: .
+      dockerfile: Dockerfile.client
     container_name: mu-client-web
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./public:/usr/share/nginx/html:ro
     networks:
       - mu-network
 
