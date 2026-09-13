@@ -62,7 +62,8 @@ RUN emcmake cmake -B build-wasm \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_EDITOR=OFF \
     -DCMAKE_PREFIX_PATH="/opt/curl-wasm;/opt/openssl-wasm" \
-    -DCURL_DIR=/opt/curl-wasm/lib/cmake/CURL \
+    -DCURL_INCLUDE_DIR=/opt/curl-wasm/include \
+    -DCURL_LIBRARY=/opt/curl-wasm/lib/libcurl.a \
     -DOPENSSL_ROOT_DIR=/opt/openssl-wasm \
     -DOPENSSL_INCLUDE_DIR=/opt/openssl-wasm/include \
     -DOPENSSL_CRYPTO_LIBRARY=/opt/openssl-wasm/lib/libcrypto.a \
