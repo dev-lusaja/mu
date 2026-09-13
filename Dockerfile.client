@@ -51,6 +51,12 @@ RUN git clone --recursive https://github.com/sven-n/MuMain.git mumain
 
 WORKDIR /src/mumain
 
+# Pre-populate NuGet cache for wire-size codegen (MUnique.OpenMU.Network.Packets v0.9.10)
+RUN mkdir -p /src/mumain/.nuget/munique.openmu.network.packets/0.9.10 && \
+    wget -qO /tmp/packets.nupkg https://api.nuget.org/v3-flatcontainer/munique.openmu.network.packets/0.9.10/munique.openmu.network.packets.0.9.10.nupkg && \
+    python3 -m zipfile -e /tmp/packets.nupkg /src/mumain/.nuget/munique.openmu.network.packets/0.9.10 && \
+    rm /tmp/packets.nupkg
+
 # Build script with WASM compilation pointing explicitly to OpenSSL and cURL WASM static libraries
 RUN emcmake cmake -B build-wasm \
     -DCMAKE_BUILD_TYPE=Release \
