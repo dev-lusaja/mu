@@ -24,20 +24,44 @@ RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.0.13/ope
     make install_sw && \
     [ -d /opt/openssl-wasm/lib64 ] && [ ! -d /opt/openssl-wasm/lib ] && ln -s /opt/openssl-wasm/lib64 /opt/openssl-wasm/lib || true
 
+# Build cURL for WebAssembly (WASM static libraries)
+WORKDIR /src/curl
+RUN wget https://curl.se/download/curl-8.6.0.tar.gz && \
+    tar -xzf curl-8.6.0.tar.gz && \
+    cd curl-8.6.0 && \
+    emcmake cmake -B build-curl \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DCURL_DISABLE_LDAP=ON \
+        -DCURL_DISABLE_LDAPS=ON \
+        -DCURL_DISABLE_TELNET=ON \
+        -DCURL_DISABLE_DICT=ON \
+        -DCURL_DISABLE_FILE=ON \
+        -DCURL_DISABLE_TFTP=ON \
+        -DCMAKE_INSTALL_PREFIX=/opt/curl-wasm \
+        -DOPENSSL_ROOT_DIR=/opt/openssl-wasm \
+        -DOPENSSL_INCLUDE_DIR=/opt/openssl-wasm/include \
+        -DOPENSSL_CRYPTO_LIBRARY=/opt/openssl-wasm/lib/libcrypto.a && \
+    cmake --build build-curl --target install -j$(nproc) && \
+    [ -d /opt/curl-wasm/lib64 ] && [ ! -d /opt/curl-wasm/lib ] && ln -s /opt/curl-wasm/lib64 /opt/curl-wasm/lib || true
+
 # Clone MuMain repository and submodules
 WORKDIR /src
 RUN git clone --recursive https://github.com/sven-n/MuMain.git mumain
 
 WORKDIR /src/mumain
 
-# Build script with WASM compilation pointing explicitly to the WASM OpenSSL static libraries
+# Build script with WASM compilation pointing explicitly to OpenSSL and cURL WASM static libraries
 RUN emcmake cmake -B build-wasm \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_EDITOR=OFF \
     -DOPENSSL_ROOT_DIR=/opt/openssl-wasm \
     -DOPENSSL_INCLUDE_DIR=/opt/openssl-wasm/include \
     -DOPENSSL_CRYPTO_LIBRARY=/opt/openssl-wasm/lib/libcrypto.a \
-    -DOPENSSL_USE_STATIC_LIBS=TRUE
+    -DOPENSSL_USE_STATIC_LIBS=TRUE \
+    -DCURL_ROOT_DIR=/opt/curl-wasm \
+    -DCURL_INCLUDE_DIR=/opt/curl-wasm/include \
+    -DCURL_LIBRARY=/opt/curl-wasm/lib/libcurl.a
 
 RUN cmake --build build-wasm --target Main -j$(nproc)
 
