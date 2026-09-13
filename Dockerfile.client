@@ -61,13 +61,12 @@ RUN mkdir -p /src/mumain/.nuget/munique.openmu.network.packets/0.9.10 && \
 RUN emcmake cmake -B build-wasm \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_EDITOR=OFF \
+    -DCMAKE_PREFIX_PATH="/opt/curl-wasm;/opt/openssl-wasm" \
+    -DCURL_DIR=/opt/curl-wasm/lib/cmake/CURL \
     -DOPENSSL_ROOT_DIR=/opt/openssl-wasm \
     -DOPENSSL_INCLUDE_DIR=/opt/openssl-wasm/include \
     -DOPENSSL_CRYPTO_LIBRARY=/opt/openssl-wasm/lib/libcrypto.a \
-    -DOPENSSL_USE_STATIC_LIBS=TRUE \
-    -DCURL_ROOT_DIR=/opt/curl-wasm \
-    -DCURL_INCLUDE_DIR=/opt/curl-wasm/include \
-    -DCURL_LIBRARY=/opt/curl-wasm/lib/libcurl.a
+    -DOPENSSL_USE_STATIC_LIBS=TRUE
 
 RUN cmake --build build-wasm --target Main -j$(nproc)
 
