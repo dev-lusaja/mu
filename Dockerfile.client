@@ -21,7 +21,8 @@ RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.0.13/ope
     cd openssl-3.0.13 && \
     ./Configure linux-generic32 no-shared no-asm no-threads no-engine no-afalgeng --prefix=/opt/openssl-wasm CC=emcc AR=emar RANLIB=emranlib && \
     make -j$(nproc) && \
-    make install_sw
+    make install_sw && \
+    [ -d /opt/openssl-wasm/lib64 ] && [ ! -d /opt/openssl-wasm/lib ] && ln -s /opt/openssl-wasm/lib64 /opt/openssl-wasm/lib || true
 
 # Clone MuMain repository and submodules
 WORKDIR /src
@@ -29,11 +30,14 @@ RUN git clone --recursive https://github.com/sven-n/MuMain.git mumain
 
 WORKDIR /src/mumain
 
-# Build script with WASM compilation pointing to the WASM OpenSSL installation
+# Build script with WASM compilation pointing explicitly to the WASM OpenSSL static libraries
 RUN emcmake cmake -B build-wasm \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_EDITOR=OFF \
-    -DOPENSSL_ROOT_DIR=/opt/openssl-wasm
+    -DOPENSSL_ROOT_DIR=/opt/openssl-wasm \
+    -DOPENSSL_INCLUDE_DIR=/opt/openssl-wasm/include \
+    -DOPENSSL_CRYPTO_LIBRARY=/opt/openssl-wasm/lib/libcrypto.a \
+    -DOPENSSL_USE_STATIC_LIBS=TRUE
 
 RUN cmake --build build-wasm --target Main -j$(nproc)
 
