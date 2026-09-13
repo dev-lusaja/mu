@@ -19,9 +19,9 @@ WORKDIR /src/openssl
 RUN wget https://github.com/openssl/openssl/releases/download/openssl-3.0.13/openssl-3.0.13.tar.gz && \
     tar -xzf openssl-3.0.13.tar.gz && \
     cd openssl-3.0.13 && \
-    emconfigure ./Configure linux-generic32 no-shared no-asm no-threads --prefix=/opt/openssl-wasm && \
-    emmake make -j$(nproc) && \
-    emmake make install_sw
+    ./Configure linux-generic32 no-shared no-asm no-threads --prefix=/opt/openssl-wasm CC=emcc AR=emar RANLIB=emranlib && \
+    make -j$(nproc) && \
+    make install_sw
 
 # Clone MuMain repository and submodules
 WORKDIR /src
