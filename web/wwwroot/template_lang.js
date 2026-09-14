@@ -1,0 +1,116 @@
+// Skeleton for adding a new interface language. To add e.g. German:
+//   1. Copy this file to de.js (or just copy the already-translated en.js).
+//   2. Rename the "xx" key below to your language code (e.g. .de).
+//   3. Fill in every value with the translation.
+//   4. Add <script src="de.js"></script> next to en.js / pl.js on every *.html page.
+// The switch button (label = the uppercased code, e.g. "DE") then appears automatically;
+// to give it a nicer label, add an entry to the LABELS map in lang.js.
+window.muTranslations = window.muTranslations || {};
+window.muTranslations.xx = {
+    title: "",
+    titleChange: "",
+    rankingTitle: "",
+
+    login: "",
+    email: "",
+    pass: "",
+    confirmPass: "",
+    oldPass: "",
+    newPass: "",
+    pin: "",
+    pinWarn: "",
+
+    btnReg: "",
+    btnChange: "",
+
+    placeholderLogin: "",
+    placeholderEmail: "",
+    placeholderPass: "",
+    placeholderConfirmPass: "",
+    placeholderPin: "",
+
+    connError: "",
+    processing: "",
+    srvStatus: "",
+    playersOnline: "",
+    dlDownload: "",
+    dlRecommended: "",
+    dlSoon: "",
+    online: "",
+    offline: "",
+
+    charName: "",
+    charClass: "",
+    charLvl: "",
+    charMl: "",
+
+    navStats: "",
+    navEvents: "",
+    navHome: "",
+    navChangePass: "",
+    navRegister: "",
+    navArmory: "",
+    navCommands: "",
+
+    commandsTitle: "",
+    commandsIntro: "",
+    cmdSecStats: "",
+    cmdSecReset: "",
+    cmdSecChar: "",
+    cmdSecSocial: "",
+    cmdSecHelp: "",
+    cmdHint: "",
+
+    cmdAddDesc: "",
+    cmdResetDesc: "",
+    cmdResetInfoDesc: "",
+    cmdResetStatsDesc: "",
+    cmdMoveDesc: "",
+    cmdClearInvDesc: "",
+    cmdNpcDesc: "",
+    cmdOpenWareDesc: "",
+    cmdOffLevelDesc: "",
+    cmdLanguageDesc: "",
+    cmdPostDesc: "",
+    cmdWarDesc: "",
+    cmdBattleSoccerDesc: "",
+    cmdListDesc: "",
+    cmdHelpDesc: "",
+
+    armoryTitle: "",
+    armorySearch: "",
+    armoryBtn: "",
+    armoryResets: "",
+    armoryHint: "",
+    armoryNoItems: "",
+    ARMORY_NOT_FOUND: "",
+    RATE_LIMIT_ARMORY: "",
+
+    eventsTitle: "",
+    eventsRemaining: "",
+    eventsDuration: "",
+    eventsMin: "",
+    eventsXpMult: "",
+    eventsShow: "",
+    eventsHide: "",
+    eventsNone: "",
+
+    INVALID_REQUEST: "",
+    RATE_LIMIT_IP: "",
+    INVALID_USERNAME: "",
+    INVALID_PASSWORD_LENGTH: "",
+    INVALID_SECURITY_CODE: "",
+    INVALID_EMAIL: "",
+    USERNAME_TAKEN: "",
+    PASSWORDS_DO_NOT_MATCH: "",
+    REGISTRATION_SUCCESS: "",
+    RATE_LIMIT_PASSWORD: "",
+    USER_NOT_FOUND: "",
+    INVALID_OLD_PASSWORD: "",
+    PASSWORD_CHANGE_SUCCESS: "",
+    RATE_LIMIT_RANKING: "",
+    DATABASE_ERROR: "",
+    SERVER_ERROR: "",
+    rankingNone: "",
+    rankingError: ""
+};
