@@ -1,6 +1,6 @@
 // Shared language switcher for every page.
 //
-// Translations stay in SEPARATE per-language files (en.js, pl.js, de.js, …); each one adds
+// Translations stay in SEPARATE per-language files (en.js, es.js, de.js, …); each one adds
 // its own object to window.muTranslations. To add a language: copy en.js to <code>.js,
 // translate the values, and include it with <script src="<code>.js"> on the pages — the
 // switch button for it then appears automatically (no per-page button editing).
@@ -10,9 +10,9 @@
 // called after every language change, including the initial one.
 (function () {
     // Optional pretty labels; languages without an entry fall back to the uppercased code.
-    const LABELS = { en: 'EN', pl: 'PL' };
+    const LABELS = { en: 'EN', es: 'ES' };
 
-    // Default language for first-time visitors, taken from <script src="lang.js" data-default="pl">.
+    // Default language for first-time visitors, taken from <script src="lang.js" data-default="es">.
     // Without the attribute the first included language wins (en.js is included first → English).
     const scriptDefault = document.currentScript ? document.currentScript.dataset.default : null;
 
@@ -26,7 +26,7 @@
         const available = languages();
         if (saved && available.includes(saved)) return saved;
         if (scriptDefault && available.includes(scriptDefault)) return scriptDefault;
-        return available[0] || 'en';
+        return available[0] || 'es';
     }
 
     function applyTranslations(lang) {

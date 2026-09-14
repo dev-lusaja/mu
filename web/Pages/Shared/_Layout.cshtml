@@ -3,8 +3,8 @@
     // Single source of truth for the site languages + default (appsettings.json -> "Site").
     // Add a language: drop <code>.js in wwwroot and add the code here. Change the default: edit
     // DefaultLanguage. No page or layout edits needed — every page inherits this.
-    var langs = Configuration.GetSection("Site:Languages").Get<string[]>() ?? new[] { "en", "pl" };
-    var defaultLang = Configuration["Site:DefaultLanguage"] ?? (langs.Length > 0 ? langs[0] : "en");
+    var langs = Configuration.GetSection("Site:Languages").Get<string[]>() ?? new[] { "es", "en" };
+    var defaultLang = Configuration["Site:DefaultLanguage"] ?? (langs.Length > 0 ? langs[0] : "es");
 
     // Footer navigation, shared by every page; the current page is skipped automatically.
     var active = ViewData["ActivePage"] as string;

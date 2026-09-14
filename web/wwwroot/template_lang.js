@@ -2,7 +2,7 @@
 //   1. Copy this file to de.js (or just copy the already-translated en.js).
 //   2. Rename the "xx" key below to your language code (e.g. .de).
 //   3. Fill in every value with the translation.
-//   4. Add <script src="de.js"></script> next to en.js / pl.js on every *.html page.
+//   4. Add <script src="de.js"></script> next to en.js / es.js on every page.
 // The switch button (label = the uppercased code, e.g. "DE") then appears automatically;
 // to give it a nicer label, add an entry to the LABELS map in lang.js.
 window.muTranslations = window.muTranslations || {};
