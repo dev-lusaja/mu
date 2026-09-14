@@ -4,7 +4,7 @@ This is simple website for OpenMU.
 Website has been created for mine OpenMU server builder: https://github.com/nolt/openmu-docker  
 It connects to same docker network where database is.
 
-Website is multilanguage English and Polish.
+Website is multilanguage English and Spanish.
 
 ## Website allows:
 - register new account
@@ -45,14 +45,14 @@ means editing **one config list** — no per-page changes.
    on every page automatically:
    ```json
    "Site": {
-     "Languages": [ "en", "pl", "de" ],
-     "DefaultLanguage": "en"
+     "Languages": [ "es", "en", "de" ],
+     "DefaultLanguage": "es"
    }
    ```
 
 3. **Update content.js (optional)**
    The homepage rates and welcome text come from `window.muContent` in `wwwroot/content.js`.
-   Add your language section there, following the same pattern as `en` and `pl`.
+   Add your language section there, following the same pattern as `en` and `es`.
 
 4. **Done**
    `lang.js` builds the switch buttons automatically from every language found in

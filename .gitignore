@@ -1,1 +1,5 @@
 .env
+bin/
+obj/
+web/bin/
+web/obj/
