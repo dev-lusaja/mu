@@ -7,7 +7,7 @@ services:
     networks:
       - openmu-network
     ports:
-      - "${ADMIN_PANEL_PORT}:80"
+      - "${ADMIN_PANEL_PORT}:8080"
       - "55901:55901"
       - "55902:55902"
       - "55903:55903"
@@ -18,7 +18,7 @@ services:
       - "55980:55980"
     environment:
       RESOLVE_IP: ${RESOLVE_IP}
-      ASPNETCORE_URLS: http://+:80
+      ASPNETCORE_URLS: http://+:8080
       DB_HOST: openmu-database
       # Optional bootstrap admin panel user. Without it, the admin panel is reachable
       # without a login until the first user has been created within the panel itself.
