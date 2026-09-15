@@ -49,7 +49,7 @@ services:
     networks:
       - openmu-network
     volumes:
-      - ${OPENMU_DB_PATH}:/var/lib/postgresql
+      - ${OPENMU_DB_PATH}:/var/lib/postgresql/data
 
   openmu-web:
     image: openmu-web:latest
