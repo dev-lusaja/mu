@@ -8,8 +8,8 @@ window.muConfig = {
     // edits. `recommended` highlights it as the preferred option; `soon` shows it as
     // an upcoming, non-clickable target.
     downloads: [
-        { id: "launcher", icon: "🚀", name: "Launcher", url: "#", recommended: true },
-        { id: "windows", icon: "🪟", name: "Windows", url: "#" },
+        { id: "launcher", icon: "🚀", name: "Web Launcher", url: "http://192.168.0.172:4173/", recommended: true, target: "_blank" },
+        { id: "windows", icon: "🪟", name: "Windows", url: "#", soon: true },
         { id: "linux", icon: "🐧", name: "Linux", url: "#", soon: true },
     ],
 };

@@ -5,6 +5,7 @@
     // DefaultLanguage. No page or layout edits needed — every page inherits this.
     var langs = Configuration.GetSection("Site:Languages").Get<string[]>() ?? new[] { "es", "en" };
     var defaultLang = Configuration["Site:DefaultLanguage"] ?? (langs.Length > 0 ? langs[0] : "es");
+    var launcherUrl = Configuration["Downloads:LauncherUrl"] ?? Configuration["Downloads:Launcher"] ?? Configuration["Site:LauncherUrl"] ?? "http://192.168.0.172:4173/";
 
     // Footer navigation, shared by every page; the current page is skipped automatically.
     var active = ViewData["ActivePage"] as string;
@@ -30,6 +31,19 @@
         <script src="/@(l).js"></script>
     }
     <script src="/content.js"></script>
+    @if (!string.IsNullOrEmpty(launcherUrl))
+    {
+        <script>
+            window.muConfig = window.muConfig || {};
+            window.muConfig.launcherUrl = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(launcherUrl));
+            if (window.muConfig.downloads) {
+                var launcher = window.muConfig.downloads.find(function (d) { return d.id === 'launcher'; });
+                if (launcher) {
+                    launcher.url = window.muConfig.launcherUrl;
+                }
+            }
+        </script>
+    }
     <script src="/lang.js" data-default="@defaultLang"></script>
     @await RenderSectionAsync("Styles", required: false)
 </head>

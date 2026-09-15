@@ -43,9 +43,9 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: openmu
-      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
     networks:
       - openmu-network
     volumes:
@@ -70,6 +70,37 @@ services:
     networks:
       - openmu-network
     restart: always
+
+  openmu-client:
+    image: openmu-client:latest
+    container_name: openmu-client
+    network_mode: bridge
+    env_file:
+      - .env
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "${CLIENT_VITE_PORT}:4173"   # Vite preview → http://localhost:<CLIENT_VITE_PORT>/online
+      - "${CLIENT_PROXY_PORT}:3000"  # WS↔TCP proxy
+    environment:
+      - PORT=3000
+      - CLIENT_VITE_PORT=4173
+      - HOSTNAME=0.0.0.0
+      # ALLOW_TARGETS vacío = acepta cualquier host (solo para dev local)
+      - ALLOW_TARGETS=
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:5432/${POSTGRES_DB}
+      # Desactiva la lista de GitHub de MU Ignies
+      - VITE_SERVER_LIST_URL=https://gist.githubusercontent.com/dev-lusaja/b19f558494d74ce7583801d9d7e4a4fd/raw/2b52d807944b81356fd4b08b4f6e3ce4ff9927f9/devMU.md
+      # Datos de tu Connect Server
+      # - VITE_CS_HOST=${RESOLVE_IP}
+      # - VITE_CS_PORT=44405
+      # Datos de tu WebSocket Proxy
+      # - VITE_WS_HOST=ws://${RESOLVE_IP}
+      # - VITE_WS_PORT=3000
+    volumes:
+      - ${CLIENT_DIST_PATH}:/app/dist # Caché del build: persiste entre reinicios
+    restart: unless-stopped
 
 networks:
   openmu-network:

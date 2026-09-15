@@ -61,11 +61,15 @@ function renderDownloads() {
     const area = document.getElementById('downloadArea');
     if (!area) return;
     const t = window.t();
+    const launcherUrl = window.muConfig && window.muConfig.launcherUrl;
     const items = (window.muConfig.downloads || []).map(d => {
+        const isLauncher = d.id === 'launcher';
+        const url = (isLauncher && launcherUrl) ? launcherUrl : d.url;
         const cls = d.recommended ? 'recommended' : (d.soon ? 'soon' : '');
         const tag = d.recommended ? `<span class="dlC-tag">${t.dlRecommended}</span>`
             : (d.soon ? `<span class="dlC-tag">${t.dlSoon}</span>` : '');
-        return `<a class="dlC-item ${cls}" href="${d.soon ? '#' : d.url}"><span>${d.icon}</span> <span>${d.name}</span> ${tag}</a>`;
+        const targetAttr = (!d.soon && (isLauncher || d.target === '_blank')) ? ' target="_blank" rel="noopener noreferrer"' : '';
+        return `<a class="dlC-item ${cls}" href="${d.soon ? '#' : url}"${targetAttr}><span>${d.icon}</span> <span>${d.name}</span> ${tag}</a>`;
     }).join('');
 
     area.innerHTML = `
