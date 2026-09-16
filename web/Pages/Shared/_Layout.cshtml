@@ -1,18 +1,14 @@
 @inject IConfiguration Configuration
 @{
-    // Single source of truth for the site languages + default (appsettings.json -> "Site").
-    // Add a language: drop <code>.js in wwwroot and add the code here. Change the default: edit
-    // DefaultLanguage. No page or layout edits needed — every page inherits this.
     var langs = Configuration.GetSection("Site:Languages").Get<string[]>() ?? new[] { "es", "en" };
     var defaultLang = Configuration["Site:DefaultLanguage"] ?? (langs.Length > 0 ? langs[0] : "es");
     var launcherUrl = Configuration["Downloads:LauncherUrl"] ?? Configuration["Downloads:Launcher"] ?? Configuration["Site:LauncherUrl"] ?? "http://192.168.0.172:4173/";
 
-    // Footer navigation, shared by every page; the current page is skipped automatically.
     var active = ViewData["ActivePage"] as string;
     var nav = new[]
     {
         ("/",         "navHome",     "Home"),
-        ("/stats",    "navStats",    "Server Stats"),
+        ("/stats",    "navStats",    "Statistics"),
         ("/armory",   "navArmory",   "Armory"),
         ("/events",   "navEvents",   "Events"),
         ("/commands", "navCommands", "Commands"),
@@ -24,7 +20,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
+    <title>@ViewData["Title"] - MU Tupac</title>
     <link rel="stylesheet" href="/style.css">
     @foreach (var l in langs)
     {
@@ -48,49 +44,119 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
-<body class="@ViewData["BodyClass"]">
-    <div class="container @ViewData["ContainerClass"]">
-        <div class="lang-switch" id="lang-switch"></div>
+<body class="murio-body @ViewData["BodyClass"]">
+    <!-- Top Header Navigation -->
+    <header class="murio-header">
+        <div class="top-nav-bar">
+            <div class="top-nav-container">
+                <nav class="main-nav">
+                    <a href="/" class="nav-item @(active == "/" ? "active" : "")">
+                        <span data-i18n="navHome">HOME</span>
+                    </a>
+                    <a href="/#downloads" class="nav-item">
+                        <span data-i18n="navFiles">JUGAR</span>
+                    </a>
+                    <a href="/stats" class="nav-item @(active == "/stats" ? "active" : "")">
+                        <span data-i18n="navStats">STATISTICS</span>
+                    </a>
+                    <a href="/armory" class="nav-item @(active == "/armory" ? "active" : "")">
+                        <span data-i18n="navArmory">ARMORY</span>
+                    </a>
+                    <a href="/events" class="nav-item @(active == "/events" ? "active" : "")">
+                        <span data-i18n="navEvents">EVENTS</span>
+                    </a>
+                    <a href="/commands" class="nav-item @(active == "/commands" ? "active" : "")">
+                        <span data-i18n="navCommands">COMMANDS</span>
+                    </a>
+                    <!-- Mock navigation links present in Murio Template -->
+                    <a href="#gifts" class="nav-item mock-link" title="Gifts system (Preview)">
+                        <span data-i18n="navGifts">GIFTS</span>
+                    </a>
+                    <a href="#rules" class="nav-item mock-link" title="Server Rules (Preview)">
+                        <span data-i18n="navRules">RULES</span>
+                    </a>
+                    <a href="#about" class="nav-item mock-link" title="About Server (Preview)">
+                        <span data-i18n="navAbout">ABOUT</span>
+                    </a>
+                </nav>
 
+                <div class="top-account-actions">
+                    <a href="/register" class="btn-account btn-signup">
+                        <span class="icon">✦</span> <span data-i18n="navRegister">SIGN UP</span>
+                    </a>
+                    <a href="/changepass" class="btn-account btn-login">
+                        <span data-i18n="navChangePass">LOG IN / ACCOUNT</span>
+                    </a>
+                    <div class="lang-switch" id="lang-switch"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner / Hero Section -->
+        <div class="hero-banner">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="logo-area">
+                    <h1 class="murio-logo">
+                        <span class="logo-main">MU TUPAC</span>
+                        <span class="logo-sub">MU ONLINE - SEASON 6</span>
+                    </h1>
+                </div>
+
+                <!-- Server Rates Bar (Murio Template feature) -->
+                <div class="server-rates-bar">
+                    <div class="rate-card rate-old">
+                        <div class="rate-title">X1200</div>
+                        <div class="rate-badge old">[OLD]</div>
+                    </div>
+                    <div class="rate-card rate-open active">
+                        <div class="rate-title">X1000</div>
+                        <div class="rate-badge open">[ONLINE]</div>
+                    </div>
+                    <div class="rate-card rate-new">
+                        <div class="rate-title">X99</div>
+                        <div class="rate-badge new">[NEW]</div>
+                    </div>
+                    <div class="rate-card rate-hard">
+                        <div class="rate-title">X1</div>
+                        <div class="rate-badge hard">[HARD]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="murio-main-container">
         @RenderBody()
+    </main>
 
-        <div class="footer-nav">
-            @* Account pages (register / changepass) supply their own links via a FooterNav     *@
-            @* section; every other page falls back to the shared, auto-built game navigation.  *@
-            @if (IsSectionDefined("FooterNav"))
-            {
-                @await RenderSectionAsync("FooterNav")
-            }
-            else
-            {
-                // The home page doubles as the account hub: it surfaces Register / Change
-                // Password ahead of the game links. Subpages only navigate among game pages.
-                if (active == "/")
-                {
-                    <a href="/register" class="nav-link"><span data-i18n="navRegister">Register Account</span></a>
-                    <a href="/changepass" class="nav-link"><span data-i18n="navChangePass">Change Password</span></a>
-                }
+    <!-- Footer -->
+    <footer class="murio-footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <span class="logo-text">MU TUPAC</span>
+                <span class="logo-subtext">MU ONLINE - LIMA, PERU</span>
+            </div>
+            <div class="footer-nav-links">
                 @foreach (var (route, key, label) in nav)
                 {
-                    if (route != active)
-                    {
-                        <a href="@route" class="nav-link"><span data-i18n="@key">@label</span></a>
-                    }
+                    <a href="@route" class="footer-link"><span data-i18n="@key">@label</span></a>
                 }
-            }
+                <a href="/register" class="footer-link"><span data-i18n="navRegister">Register</span></a>
+                <a href="/changepass" class="footer-link"><span data-i18n="navChangePass">Change Password</span></a>
+            </div>
+            <div class="footer-disclaimer">
+                <p>&copy; 2024 <strong>MU Tupac</strong>. Todos los derechos reservados.</p>
+                <p class="small-disclaimer">Servidor de MU Online Season 6 - Lima, Perú. No afiliado con Webzen Inc.</p>
+            </div>
+            <div class="credits">
+                <span class="credits-text">Hecho con <span class="heart-icon">❤️</span> por <strong>devlusaja</strong></span>
+            </div>
         </div>
-    </div>
-    <div class="credits">
-        <a href="https://github.com/nolt" target="_blank">
-            <span>&lt;/&gt; with ❤️ by</span> Nolt
-        </a>
-    </div>
+    </footer>
 
-    @* Rendered OUTSIDE .container on purpose: .container has backdrop-filter, which makes it the   *@
-    @* containing block for position:fixed children. Overlays (e.g. the armory item tooltip) must    *@
-    @* live here so they position against the viewport, not the panel.                               *@
     @await RenderSectionAsync("BodyEnd", required: false)
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

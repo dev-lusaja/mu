@@ -1,16 +1,23 @@
 @page "/commands"
 @{
-    ViewData["Title"] = "OpenMU - Commands";
+    ViewData["Title"] = "Chat Commands - Murio OpenMU";
     ViewData["BodyClass"] = "stats-body";
     ViewData["ActivePage"] = "/commands";
 }
 
-<h2 data-i18n="commandsTitle">Chat Commands</h2>
-<p class="commands-intro" data-i18n="commandsIntro">Commands available to players.</p>
+<div class="murio-subpage-container">
+    <div class="section-header">
+        <h2 class="section-title"><span class="icon">✦</span> <span data-i18n="commandsTitle">CHAT COMMANDS</span> <span class="icon">✦</span></h2>
+    </div>
 
-<div id="commandsContainer"></div>
+    <div class="murio-card commands-card">
+        <p class="commands-intro" data-i18n="commandsIntro">Commands available to players. Type them in the in-game chat.</p>
 
-<div class="cmd-hint" id="cmdHint" data-i18n="cmdHint"></div>
+        <div id="commandsContainer"></div>
+
+        <div class="cmd-hint warning-box" id="cmdHint" data-i18n="cmdHint"></div>
+    </div>
+</div>
 
 @section Styles {
     <link rel="stylesheet" href="/css/commands.css">

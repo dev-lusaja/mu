@@ -1,19 +1,25 @@
 @page "/events"
 @{
-    ViewData["Title"] = "OpenMU - Events";
+    ViewData["Title"] = "Events Schedule - Murio OpenMU";
     ViewData["BodyClass"] = "stats-body";
     ViewData["ActivePage"] = "/events";
 }
 
-<h2 data-i18n="eventsTitle">Nadchodzące Wydarzenia</h2>
+<div class="murio-subpage-container">
+    <div class="section-header">
+        <h2 class="section-title"><span class="icon">✦</span> <span data-i18n="eventsTitle">UPCOMING EVENTS</span> <span class="icon">✦</span></h2>
+    </div>
 
-<div class="server-status" id="serverStatus">
-    <span class="status-dot" id="statusDot"></span>
-    <span id="statusText">Checking...</span>
-</div>
+    <div class="server-status" id="serverStatus">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Checking...</span>
+    </div>
 
-<div id="eventsContainer">
-    <div class="event-loader">...</div>
+    <div class="murio-card events-card">
+        <div id="eventsContainer">
+            <div class="event-loader" data-i18n="processing">Loading event schedule...</div>
+        </div>
+    </div>
 </div>
 
 @section Styles {

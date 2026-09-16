@@ -23,7 +23,7 @@ public static class RankingEndpoints
                     SELECT
                         c.""Name"",
                         c.""Experience"",
-                        cc.""Name"" as ""ClassName"",
+                        COALESCE(cc.""Name"", 'Hero Class') as ""ClassName"",
                         (SELECT a.""Value"" FROM data.""StatAttribute"" a
                          JOIN config.""AttributeDefinition"" ad ON a.""DefinitionId"" = ad.""Id""
                          WHERE a.""CharacterId"" = c.""Id"" AND ad.""Designation"" = 'Level' LIMIT 1) as ""Level"",
@@ -34,7 +34,7 @@ public static class RankingEndpoints
                          JOIN config.""AttributeDefinition"" ad ON a.""DefinitionId"" = ad.""Id""
                          WHERE a.""CharacterId"" = c.""Id"" AND ad.""Designation"" = 'Master Level' LIMIT 1) as ""MasterLevel""
                     FROM data.""Character"" c
-                    JOIN config.""CharacterClass"" cc ON c.""CharacterClassId"" = cc.""Id""
+                    LEFT JOIN config.""CharacterClass"" cc ON c.""CharacterClassId"" = cc.""Id""
                     ORDER BY COALESCE((SELECT a.""Value"" FROM data.""StatAttribute"" a
                      JOIN config.""AttributeDefinition"" ad ON a.""DefinitionId"" = ad.""Id""
                      WHERE a.""CharacterId"" = c.""Id"" AND ad.""Designation"" = 'Master Level' LIMIT 1), 0) DESC,
