@@ -105,7 +105,7 @@ function switchWidgetTab(tab) {
 const charClassData = {
     dw: {
         name: "Dark Wizard",
-        image: "/img/sm_profile.jpeg",
+        image: "/img/dm_profile.jpeg",
         desc: "Masters of elemental offensive spellcraft. The Dark Wizard unleashes devastating area-of-effect spells like Evil Spirit and Flame to annihilate enemy hordes from a distance.",
         stats: [95, 45, 80]
     },
@@ -135,7 +135,7 @@ const charClassData = {
     },
     sum: {
         name: "Summoner",
-        image: "/img/dm_profile.jpeg",
+        image: "/img/sm_profile.jpeg",
         desc: "Wielders of ancient dark curses and mysterious summons. Summoners drain enemy vitality while casting debilitating spells upon opponents.",
         stats: [92, 50, 85]
     }

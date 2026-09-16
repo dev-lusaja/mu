@@ -44,7 +44,7 @@ function getProfileImageByClass(className) {
     const name = className.toLowerCase();
 
     if (name.includes('wizard') || name.includes('soul') || name.includes('grand') || name.includes('dw') || name.includes('sm') || name.includes('gm')) {
-        return '/img/sm_profile.jpeg';
+        return '/img/dm_profile.jpeg';
     }
     if (name.includes('knight') || name.includes('blade') || name.includes('dragon') || name.includes('dk') || name.includes('bk') || name.includes('bm')) {
         return '/img/dk_profile.jpeg';
@@ -59,7 +59,7 @@ function getProfileImageByClass(className) {
         return '/img/dl_profile.jpeg';
     }
     if (name.includes('summoner') || name.includes('bloody') || name.includes('dimension') || name.includes('sum') || name.includes('bs') || name.includes('dim')) {
-        return '/img/dm_profile.jpeg';
+        return '/img/sm_profile.jpeg';
     }
 
     return '/img/dk_profile.jpeg';
