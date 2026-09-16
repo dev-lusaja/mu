@@ -20,7 +20,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - OpenMU</title>
+    <title>@ViewData["Title"] - MU Tupac</title>
     <link rel="stylesheet" href="/style.css">
     @foreach (var l in langs)
     {
@@ -54,7 +54,7 @@
                         <span data-i18n="navHome">HOME</span>
                     </a>
                     <a href="/#downloads" class="nav-item">
-                        <span data-i18n="navFiles">FILES</span>
+                        <span data-i18n="navFiles">JUGAR</span>
                     </a>
                     <a href="/stats" class="nav-item @(active == "/stats" ? "active" : "")">
                         <span data-i18n="navStats">STATISTICS</span>
@@ -98,7 +98,7 @@
             <div class="hero-content">
                 <div class="logo-area">
                     <h1 class="murio-logo">
-                        <span class="logo-main">MURIO</span>
+                        <span class="logo-main">MU TUPAC</span>
                         <span class="logo-sub">MU ONLINE - SEASON 6</span>
                     </h1>
                 </div>
@@ -135,8 +135,8 @@
     <footer class="murio-footer">
         <div class="footer-container">
             <div class="footer-logo">
-                <span class="logo-text">MURIO</span>
-                <span class="logo-subtext">MU ONLINE</span>
+                <span class="logo-text">MU TUPAC</span>
+                <span class="logo-subtext">MU ONLINE - LIMA, PERU</span>
             </div>
             <div class="footer-nav-links">
                 @foreach (var (route, key, label) in nav)
@@ -147,13 +147,11 @@
                 <a href="/changepass" class="footer-link"><span data-i18n="navChangePass">Change Password</span></a>
             </div>
             <div class="footer-disclaimer">
-                <p>&copy; 2024 <strong>OpenMU / Murio Template</strong>. All rights reserved.</p>
-                <p class="small-disclaimer">This web template is designed for OpenMU. Not affiliated with or endorsed by Webzen Inc.</p>
+                <p>&copy; 2024 <strong>MU Tupac</strong>. Todos los derechos reservados.</p>
+                <p class="small-disclaimer">Servidor de MU Online Season 6 - Lima, Perú. No afiliado con Webzen Inc.</p>
             </div>
             <div class="credits">
-                <a href="https://github.com/nolt" target="_blank">
-                    <span>&lt;/&gt; with ❤️ by</span> Nolt
-                </a>
+                <span class="credits-text">Hecho con <span class="heart-icon">❤️</span> por <strong>devlusaja</strong></span>
             </div>
         </div>
     </footer>

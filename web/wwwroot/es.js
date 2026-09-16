@@ -40,7 +40,7 @@ window.muTranslations.es = {
     navStats: "Estadísticas",
     navEvents: "Eventos",
     navHome: "Inicio",
-    navFiles: "Archivos",
+    navFiles: "Jugar",
     navGifts: "Regalos",
     navRules: "Reglas",
     navAbout: "Acerca de",

@@ -160,7 +160,7 @@ function renderDownloads() {
         const tag = d.recommended ? `<span class="dlC-tag">${t.dlRecommended}</span>`
             : (d.soon ? `<span class="dlC-tag">${t.dlSoon}</span>` : '');
         const targetAttr = (!d.soon && (isLauncher || d.target === '_blank')) ? ' target="_blank" rel="noopener noreferrer"' : '';
-        return `<a class="dlC-item ${cls}" href="${d.soon ? '#' : url}"${targetAttr}><span>${d.icon}</span> <span>${d.name}</span> ${tag}</a>`;
+        return `<a class="dlC-item ${cls}" href="${d.soon ? '#' : url}"${targetAttr}><div class="dlC-item-left"><span>${d.icon}</span> <span>${d.name}</span></div>${tag}</a>`;
     }).join('');
 
     area.innerHTML = `
@@ -181,6 +181,28 @@ document.addEventListener('click', () => {
     const wrap = document.getElementById('dlCWrap');
     if (wrap) wrap.classList.remove('open');
 });
+
+function updateServerClock() {
+    const clock = document.getElementById('serverClock');
+    if (!clock) return;
+    try {
+        const now = new Date();
+        const options = {
+            timeZone: 'America/Lima',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        };
+        clock.innerText = now.toLocaleTimeString('es-PE', options);
+    } catch {
+        const now = new Date();
+        clock.innerText = now.toTimeString().split(' ')[0];
+    }
+}
+
+updateServerClock();
+setInterval(updateServerClock, 1000);
 
 checkServerStatus();
 checkOnlinePlayers();

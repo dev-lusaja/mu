@@ -1,6 +1,6 @@
 @page "/"
 @{
-    ViewData["Title"] = "Home - Murio OpenMU";
+    ViewData["Title"] = "Inicio - MU Tupac";
     ViewData["ActivePage"] = "/";
 }
 
@@ -123,6 +123,12 @@
                 <h3 class="widget-title" data-i18n="srvStatus">SERVER STATUS</h3>
             </div>
             <div class="widget-body">
+                <!-- Server Time Indicator (Lima, Peru Timezone) -->
+                <div class="server-time-box">
+                    <span class="time-label">PERU TIME (UTC-5):</span>
+                    <span class="time-value" id="serverClock">--:--:--</span>
+                </div>
+
                 <div class="status-summary-box">
                     <div class="status-indicator">
                         <div class="status-dot-box" id="indexStatusDot"></div>
@@ -139,15 +145,15 @@
                     <ul class="mini-events-list">
                         <li>
                             <span class="ev-name">Devil Square</span>
-                            <span class="ev-time active">12:00 AM</span>
+                            <span class="ev-time active">12:00 PM PET</span>
                         </li>
                         <li>
                             <span class="ev-name">Blood Castle</span>
-                            <span class="ev-time">12:30 AM</span>
+                            <span class="ev-time">02:30 PM PET</span>
                         </li>
                         <li>
                             <span class="ev-name">Chaos Castle</span>
-                            <span class="ev-time">01:00 PM</span>
+                            <span class="ev-time">05:00 PM PET</span>
                         </li>
                     </ul>
                     <a href="/events" class="widget-link" data-i18n="viewEventSchedule">FULL SCHEDULE →</a>

@@ -268,6 +268,32 @@
     text-decoration: underline;
 }
 
+/* Server Time Box */
+.server-time-box {
+    background: rgba(5, 8, 15, 0.8);
+    border: 1px solid var(--border-gold);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    font-size: 0.78rem;
+}
+
+.time-label {
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.time-value {
+    color: var(--accent-cyan);
+    font-weight: 800;
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
 /* Status Widget Box */
 .status-summary-box {
     background: rgba(5, 8, 15, 0.7);
@@ -699,12 +725,38 @@
 .dlC-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
     color: #ddd;
     text-decoration: none;
     font-size: 0.85rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: background 0.25s, color 0.25s;
+}
+.dlC-item-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.dlC-tag {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+.dlC-item.recommended .dlC-tag {
+    background: rgba(46, 204, 113, 0.18);
+    color: var(--accent-green);
+    border: 1px solid rgba(46, 204, 113, 0.4);
+}
+.dlC-item.soon .dlC-tag {
+    background: rgba(212, 175, 55, 0.18);
+    color: var(--primary);
+    border: 1px solid var(--border-gold);
 }
 .dlC-item:hover { background: rgba(212, 175, 55, 0.15); color: var(--primary); }
 

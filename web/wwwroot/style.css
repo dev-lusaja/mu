@@ -127,36 +127,47 @@ body.murio-body {
 .btn-account {
     text-decoration: none;
     font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    padding: 6px 14px;
-    border-radius: 4px;
-    transition: all 0.25s ease;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-signup {
-    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-    color: #fff;
-    border: 1px solid rgba(0, 229, 255, 0.4);
-    box-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
+    background: linear-gradient(135deg, #00d2ff 0%, #005bea 100%);
+    color: #ffffff;
+    border: 1px solid rgba(0, 210, 255, 0.6);
+    box-shadow: 0 4px 15px rgba(0, 180, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .btn-signup:hover {
-    filter: brightness(1.2);
-    box-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #00e5ff 0%, #0072ff 100%);
+    box-shadow: 0 6px 20px rgba(0, 229, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border-color: #00e5ff;
 }
 
 .btn-login {
-    background: linear-gradient(135deg, #d4af37 0%, #a68a2d 100%);
-    color: #000;
-    border: 1px solid var(--primary);
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    background: linear-gradient(135deg, #f39c12 0%, #d4af37 50%, #b8860b 100%);
+    color: #0a0e17;
+    border: 1px solid rgba(255, 223, 0, 0.7);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .btn-login:hover {
-    filter: brightness(1.15);
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #ffdf00 0%, #d4af37 100%);
+    box-shadow: 0 6px 20px rgba(255, 223, 0, 0.6), inset 0 1px 0 #ffffff;
+    border-color: #fff;
 }
 
 /* Language Switcher */
@@ -705,17 +716,31 @@ tr:hover {
 
 .credits {
     margin-top: 1rem;
-    font-size: 0.75rem;
-}
-
-.credits a {
+    font-size: 0.85rem;
     color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.3s;
+    letter-spacing: 0.5px;
 }
 
-.credits a:hover {
-    color: var(--primary);
+.credits-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.heart-icon {
+    display: inline-block;
+    color: #e74c3c;
+    animation: heartbeat 1.2s infinite ease-in-out;
+    transform-origin: center;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.32); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.32); }
+    70% { transform: scale(1); }
+    100% { transform: scale(1); }
 }
 
 @media (max-width: 768px) {
