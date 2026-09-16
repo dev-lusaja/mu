@@ -1,32 +1,36 @@
 This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
 The content has been processed where line numbers have been added.
 
-# File Summary
+<file_summary>
+This section contains a summary of this file.
 
-## Purpose
+<purpose>
 This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
 It is designed to be easily consumable by AI systems for analysis, code review,
 or other automated processes.
+</purpose>
 
-## File Format
+<file_format>
 The content is organized as follows:
 1. This summary section
 2. Repository information
 3. Directory structure
 4. Repository files (if enabled)
 5. Multiple file entries, each consisting of:
-  a. A header with the file path (## File: path/to/file)
-  b. The full contents of the file in a code block
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
 
-## Usage Guidelines
+<usage_guidelines>
 - This file should be treated as read-only. Any changes should be made to the
   original repository files, not this packed version.
 - When processing this file, use the file path to distinguish
   between different files in the repository.
 - Be aware that this file may contain sensitive information. Handle it with
   the same level of security as you would the original repository.
+</usage_guidelines>
 
-## Notes
+<notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
 - Files matching these patterns are excluded: **/*.png, **/*.env, **/node_modules/**, **/.repomix/**
@@ -34,9 +38,11 @@ The content is organized as follows:
 - Files matching default ignore patterns are excluded
 - Line numbers have been added to the beginning of each line
 - Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
 
-# Directory Structure
-````
+</file_summary>
+
+<directory_structure>
 backup/
   backup.sh
   Dockerfile
@@ -108,12 +114,12 @@ docker-compose.yml
 mu.sh
 package.json
 repomix.sh
-````
+</directory_structure>
 
-# Files
+<files>
+This section contains the contents of the repository's files.
 
-## File: backup/backup.sh
-````bash
+<file path="backup/backup.sh">
  1: #!/bin/bash
  2: set -euo pipefail
  3: 
@@ -156,10 +162,9 @@ repomix.sh
 40: if [ "$DELETED" -gt 0 ]; then
 41:     log "Retención: Eliminado(s) ${DELETED} archivo(s) con más de ${RETENTION_DAYS} días de antigüedad."
 42: fi
-````
+</file>
 
-## File: backup/Dockerfile
-````dockerfile
+<file path="backup/Dockerfile">
  1: FROM postgres:16-bookworm
  2: 
  3: # Instalar el demonio cron
@@ -175,10 +180,9 @@ repomix.sh
 13: RUN chmod +x /usr/local/bin/backup.sh /usr/local/bin/restore.sh /usr/local/bin/entrypoint.sh
 14: 
 15: ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-````
+</file>
 
-## File: backup/entrypoint.sh
-````bash
+<file path="backup/entrypoint.sh">
  1: #!/bin/bash
  2: set -euo pipefail
  3: 
@@ -216,10 +220,9 @@ repomix.sh
 35: 
 36: echo "[CRON] Demonio cron activo y escuchando..."
 37: exec cron -f
-````
+</file>
 
-## File: backup/restore.sh
-````bash
+<file path="backup/restore.sh">
  1: #!/bin/bash
  2: set -euo pipefail
  3: 
@@ -252,10 +255,9 @@ repomix.sh
 30: echo "=========================================================="
 31: echo " [OK] Restauración completada con éxito."
 32: echo "=========================================================="
-````
+</file>
 
-## File: package.json
-````json
+<file path="package.json">
  1: {
  2:   "name": "mu",
  3:   "version": "1.0.0",
@@ -281,21 +283,9 @@ repomix.sh
 23:     "repomix": "^1.18.0"
 24:   }
 25: }
-````
+</file>
 
-## File: repomix.sh
-````bash
-1: #!/usr/bin/env bash
-2: 
-3: repomix --style markdown \
-4:   --output-show-line-numbers \
-5:   --output "./.repomix/context.md" \
-6:   --split-output=1mb \
-7:   --ignore "**/*.png,**/*.env,**/node_modules/**, **/.repomix/**"
-````
-
-## File: web/Data/OpenMuContext.cs
-````csharp
+<file path="web/Data/OpenMuContext.cs">
  1: using Microsoft.EntityFrameworkCore;
  2: using OpenMU_Web.Models;
  3: 
@@ -317,10 +307,9 @@ repomix.sh
 19:             .HasForeignKey(a => a.VaultId);
 20:     }
 21: }
-````
+</file>
 
-## File: web/Endpoints/ArmoryEndpoints.cs
-````csharp
+<file path="web/Endpoints/ArmoryEndpoints.cs">
   1: using System.Data;
   2: using System.Globalization;
   3: using System.Text;
@@ -648,10 +637,9 @@ repomix.sh
 325:         return " +" + rounded.ToString("0", CultureInfo.InvariantCulture);
 326:     }
 327: }
-````
+</file>
 
-## File: web/Endpoints/EventsEndpoints.cs
-````csharp
+<file path="web/Endpoints/EventsEndpoints.cs">
   1: using System.Data;
   2: using System.Text.Json;
   3: using Microsoft.AspNetCore.Mvc;
@@ -822,10 +810,9 @@ repomix.sh
 168:         }
 169:     }
 170: }
-````
+</file>
 
-## File: web/Endpoints/PasswordEndpoints.cs
-````csharp
+<file path="web/Endpoints/PasswordEndpoints.cs">
  1: using Microsoft.AspNetCore.Mvc;
  2: using Microsoft.EntityFrameworkCore;
  3: using OpenMU_Web.Data;
@@ -880,10 +867,9 @@ repomix.sh
 52:         });
 53:     }
 54: }
-````
+</file>
 
-## File: web/Endpoints/RankingEndpoints.cs
-````csharp
+<file path="web/Endpoints/RankingEndpoints.cs">
  1: using System.Data;
  2: using Microsoft.AspNetCore.Mvc;
  3: using Microsoft.EntityFrameworkCore;
@@ -964,10 +950,9 @@ repomix.sh
 78:         });
 79:     }
 80: }
-````
+</file>
 
-## File: web/Endpoints/RegistrationEndpoints.cs
-````csharp
+<file path="web/Endpoints/RegistrationEndpoints.cs">
  1: using Microsoft.AspNetCore.Mvc;
  2: using Microsoft.EntityFrameworkCore;
  3: using OpenMU_Web.Data;
@@ -1060,10 +1045,9 @@ repomix.sh
 90:         });
 91:     }
 92: }
-````
+</file>
 
-## File: web/Models/Account.cs
-````csharp
+<file path="web/Models/Account.cs">
  1: using System.ComponentModel.DataAnnotations;
  2: using System.ComponentModel.DataAnnotations.Schema;
  3: 
@@ -1086,10 +1070,9 @@ repomix.sh
 20:     public string LanguageIsoCode { get; set; } = "en";
 21:     public Guid? VaultId { get; set; }
 22: }
-````
+</file>
 
-## File: web/Models/Character.cs
-````csharp
+<file path="web/Models/Character.cs">
  1: using System.ComponentModel.DataAnnotations;
  2: using System.ComponentModel.DataAnnotations.Schema;
  3: 
@@ -1103,10 +1086,9 @@ repomix.sh
 11:     public long Experience { get; set; }
 12:     public Guid CharacterClassId { get; set; }
 13: }
-````
+</file>
 
-## File: web/Models/ItemStorage.cs
-````csharp
+<file path="web/Models/ItemStorage.cs">
  1: using System.ComponentModel.DataAnnotations;
  2: using System.ComponentModel.DataAnnotations.Schema;
  3: 
@@ -1118,17 +1100,15 @@ repomix.sh
  9:     [Key] public Guid Id { get; set; }
 10:     public int Money { get; set; }
 11: }
-````
+</file>
 
-## File: web/Pages/_ViewStart.cshtml
-````razor
+<file path="web/Pages/_ViewStart.cshtml">
 1: @{
 2:     Layout = "_Layout";
 3: }
-````
+</file>
 
-## File: web/Pages/Armory.cshtml
-````razor
+<file path="web/Pages/Armory.cshtml">
  1: @page "/armory"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Armory";
@@ -1173,10 +1153,9 @@ repomix.sh
 42: @section Scripts {
 43:     <script src="/js/armory.js"></script>
 44: }
-````
+</file>
 
-## File: web/Pages/Changepass.cshtml
-````razor
+<file path="web/Pages/Changepass.cshtml">
  1: @page "/changepass"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Change Password";
@@ -1211,10 +1190,9 @@ repomix.sh
 32: @section Scripts {
 33:     <script src="/js/changepass.js"></script>
 34: }
-````
+</file>
 
-## File: web/Pages/Commands.cshtml
-````razor
+<file path="web/Pages/Commands.cshtml">
  1: @page "/commands"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Commands";
@@ -1236,10 +1214,9 @@ repomix.sh
 19: @section Scripts {
 20:     <script src="/js/commands.js"></script>
 21: }
-````
+</file>
 
-## File: web/Pages/Events.cshtml
-````razor
+<file path="web/Pages/Events.cshtml">
  1: @page "/events"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Events";
@@ -1265,10 +1242,9 @@ repomix.sh
 23: @section Scripts {
 24:     <script src="/js/events.js"></script>
 25: }
-````
+</file>
 
-## File: web/Pages/Index.cshtml
-````razor
+<file path="web/Pages/Index.cshtml">
  1: @page "/"
  2: @{
  3:     ViewData["Title"] = "OpenMU";
@@ -1306,10 +1282,9 @@ repomix.sh
 35: @section Scripts {
 36:     <script src="/js/index.js"></script>
 37: }
-````
+</file>
 
-## File: web/Pages/Register.cshtml
-````razor
+<file path="web/Pages/Register.cshtml">
  1: @page "/register"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Registration";
@@ -1357,10 +1332,9 @@ repomix.sh
 45: @section Scripts {
 46:     <script src="/js/register.js"></script>
 47: }
-````
+</file>
 
-## File: web/Pages/Stats.cshtml
-````razor
+<file path="web/Pages/Stats.cshtml">
  1: @page "/stats"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Server Statistics";
@@ -1395,10 +1369,9 @@ repomix.sh
 32: @section Scripts {
 33:     <script src="/js/stats.js"></script>
 34: }
-````
+</file>
 
-## File: web/Services/RateLimiter.cs
-````csharp
+<file path="web/Services/RateLimiter.cs">
  1: using System.Collections.Concurrent;
  2: 
  3: namespace OpenMU_Web.Services;
@@ -1433,10 +1406,9 @@ repomix.sh
 32:             _store.TryRemove(key, out _);
 33:     }
 34: }
-````
+</file>
 
-## File: web/wwwroot/css/commands.css
-````css
+<file path="web/wwwroot/css/commands.css">
   1: .commands-intro {
   2:     text-align: center;
   3:     font-size: 0.9rem;
@@ -1541,10 +1513,9 @@ repomix.sh
 102:         white-space: normal;
 103:     }
 104: }
-````
+</file>
 
-## File: web/wwwroot/css/events.css
-````css
+<file path="web/wwwroot/css/events.css">
   1: .event-card {
   2:     background: rgba(0, 0, 0, 0.3);
   3:     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1723,10 +1694,9 @@ repomix.sh
 176:     color: #888;
 177:     font-size: 0.9rem;
 178: }
-````
+</file>
 
-## File: web/wwwroot/css/index.css
-````css
+<file path="web/wwwroot/css/index.css">
   1: .index-container {
   2:     max-width: 900px;
   3: }
@@ -1985,10 +1955,9 @@ repomix.sh
 256:         display: none;
 257:     }
 258: }
-````
+</file>
 
-## File: web/wwwroot/img/char-placeholder.svg
-````xml
+<file path="web/wwwroot/img/char-placeholder.svg">
  1: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="200" height="260" role="img" aria-label="Character">
  2:   <defs>
  3:     <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
@@ -2008,10 +1977,9 @@ repomix.sh
 17:   </g>
 18:   <text x="100" y="240" text-anchor="middle" fill="#777" font-family="Liberation Sans, Arial, sans-serif" font-size="14" letter-spacing="2">CHARACTER</text>
 19: </svg>
-````
+</file>
 
-## File: web/wwwroot/js/armory.js
-````javascript
+<file path="web/wwwroot/js/armory.js">
   1: // Equipment slot layout (paper doll): 3 columns x 4 rows.
   2: const SLOTS = [
   3:     { slot: 8, col: 1, row: 1, label: 'Pet' },      // Fenrir / pet - top left
@@ -2177,10 +2145,9 @@ repomix.sh
 163:     document.getElementById('charInput').value = initial;
 164:     loadCharacter(initial);
 165: }
-````
+</file>
 
-## File: web/wwwroot/js/changepass.js
-````javascript
+<file path="web/wwwroot/js/changepass.js">
  1: document.getElementById('changePassForm').addEventListener('submit', async (e) => {
  2:     e.preventDefault();
  3:     const btn = document.getElementById('submitBtn'), btnText = document.getElementById('btnText'),
@@ -2203,10 +2170,9 @@ repomix.sh
 20:         btnText.style.display = 'block'; btnLoader.style.display = 'none';
 21:     }
 22: });
-````
+</file>
 
-## File: web/wwwroot/js/commands.js
-````javascript
+<file path="web/wwwroot/js/commands.js">
  1: // Player (Normal) chat commands only. Descriptions live in the translation files
  2: // (keyed by descKey); this table only holds the command signature.
  3: const COMMAND_SECTIONS = [
@@ -2276,10 +2242,9 @@ repomix.sh
 67: // lang.js applies the data-i18n text and renders the language buttons; re-render the
 68: // command list (its descriptions live in the translation files) on every change.
 69: window.onLanguageChanged = renderCommands;
-````
+</file>
 
-## File: web/wwwroot/js/events.js
-````javascript
+<file path="web/wwwroot/js/events.js">
   1: async function checkServerStatus() {
   2:     const statusDot = document.getElementById('statusDot');
   3:     const statusText = document.getElementById('statusText');
@@ -2409,10 +2374,9 @@ repomix.sh
 127: loadEvents();
 128: setInterval(loadEvents, 60000);
 129: setInterval(updateCountdowns, 1000);
-````
+</file>
 
-## File: web/wwwroot/js/register.js
-````javascript
+<file path="web/wwwroot/js/register.js">
  1: document.getElementById('regForm').addEventListener('submit', async (e) => {
  2:     e.preventDefault();
  3:     const btn = document.getElementById('submitBtn'), btnText = document.getElementById('btnText'),
@@ -2435,10 +2399,9 @@ repomix.sh
 20:         btn.disabled = false; btnText.style.display = 'block'; btnLoader.style.display = 'none';
 21:     }
 22: });
-````
+</file>
 
-## File: web/wwwroot/js/stats.js
-````javascript
+<file path="web/wwwroot/js/stats.js">
  1: async function checkServerStatus() {
  2:     const statusDot = document.getElementById('statusDot');
  3:     const statusText = document.getElementById('statusText');
@@ -2500,10 +2463,9 @@ repomix.sh
 59: }
 60: 
 61: loadRanking();
-````
+</file>
 
-## File: web/wwwroot/en.js
-````javascript
+<file path="web/wwwroot/en.js">
   1: window.muTranslations = window.muTranslations || {};
   2: window.muTranslations.en = {
   3:     title: "OpenMU Registration",
@@ -2613,10 +2575,9 @@ repomix.sh
 107:     rankingNone: "No heroes found.",
 108:     rankingError: "Connection error."
 109: };
-````
+</file>
 
-## File: web/wwwroot/es.js
-````javascript
+<file path="web/wwwroot/es.js">
   1: window.muTranslations = window.muTranslations || {};
   2: window.muTranslations.es = {
   3:     title: "Registro OpenMU",
@@ -2726,10 +2687,9 @@ repomix.sh
 107:     rankingNone: "No se encontraron héroes.",
 108:     rankingError: "Error de conexión."
 109: };
-````
+</file>
 
-## File: web/wwwroot/style.css
-````css
+<file path="web/wwwroot/style.css">
   1: /* === VARIABLES === */
   2: :root {
   3:     --primary: #d4af37;
@@ -3371,10 +3331,9 @@ repomix.sh
 639:         font-size: 0.65rem;
 640:     }
 641: }
-````
+</file>
 
-## File: web/Dockerfile
-````dockerfile
+<file path="web/Dockerfile">
  1: FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
  2: WORKDIR /src
  3: 
@@ -3403,10 +3362,9 @@ repomix.sh
 26:   CMD wget -q --spider http://127.0.0.1:8080/ || exit 1
 27: 
 28: ENTRYPOINT ["dotnet", "OpenMU_Web.dll"]
-````
+</file>
 
-## File: web/OpenMU_Web.csproj
-````
+<file path="web/OpenMU_Web.csproj">
  1: <Project Sdk="Microsoft.NET.Sdk.Web">
  2:   <PropertyGroup>
  3:     <TargetFramework>net8.0</TargetFramework>
@@ -3419,10 +3377,9 @@ repomix.sh
 10:   <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 11: </ItemGroup>
 12: </Project>
-````
+</file>
 
-## File: web/Program.cs
-````csharp
+<file path="web/Program.cs">
   1: using Microsoft.EntityFrameworkCore;
   2: using System.Collections.Concurrent;
   3: using OpenMU_Web.Data;
@@ -3528,10 +3485,9 @@ repomix.sh
 103: });
 104: 
 105: app.Run();
-````
+</file>
 
-## File: client/Dockerfile
-````dockerfile
+<file path="client/Dockerfile">
  1: FROM oven/bun:1.2-slim
  2: 
  3: RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
@@ -3551,10 +3507,9 @@ repomix.sh
 17: EXPOSE 4173 3000
 18: 
 19: ENTRYPOINT ["/entrypoint.sh"]
-````
+</file>
 
-## File: client/entrypoint.sh
-````bash
+<file path="client/entrypoint.sh">
  1: #!/bin/bash
  2: set -e
  3: 
@@ -3614,10 +3569,9 @@ repomix.sh
 57: trap 'kill $PROXY_PID $PREVIEW_PID 2>/dev/null; exit 0' SIGTERM SIGINT
 58: 
 59: monitor
-````
+</file>
 
-## File: mu.sh
-````bash
+<file path="mu.sh">
   1: #!/usr/bin/env bash
   2: # =============================================================================
   3: # mu.sh — Administrador de servicios OpenMU
@@ -3861,10 +3815,19 @@ repomix.sh
 241:   # Modo interactivo
 242:   interactive
 243: fi
-````
+</file>
 
-## File: web/wwwroot/js/index.js
-````javascript
+<file path="repomix.sh">
+1: #!/usr/bin/env bash
+2: 
+3: repomix --style xml \
+4:   --output-show-line-numbers \
+5:   --output "./.repomix/context.xml" \
+6:   --split-output=1mb \
+7:   --ignore "**/*.png,**/*.env,**/node_modules/**, **/.repomix/**"
+</file>
+
+<file path="web/wwwroot/js/index.js">
  1: // lang.js fills in the data-i18n text and renders the language buttons; this hook adds
  2: // the index-only content (welcome text + rates table) from content.js on each switch.
  3: window.onLanguageChanged = function (lang) {
@@ -3963,10 +3926,9 @@ repomix.sh
 96: checkOnlinePlayers();
 97: setInterval(checkServerStatus, 30000);
 98: setInterval(checkOnlinePlayers, 30000);
-````
+</file>
 
-## File: web/wwwroot/lang.js
-````javascript
+<file path="web/wwwroot/lang.js">
  1: // Shared language switcher for every page.
  2: //
  3: // Translations stay in SEPARATE per-language files (en.js, es.js, de.js, …); each one adds
@@ -4042,10 +4004,9 @@ repomix.sh
 73:         setLanguage(currentLang());
 74:     }
 75: })();
-````
+</file>
 
-## File: web/wwwroot/template_lang.js
-````javascript
+<file path="web/wwwroot/template_lang.js">
   1: // Skeleton for adding a new interface language. To add e.g. German:
   2: //   1. Copy this file to de.js (or just copy the already-translated en.js).
   3: //   2. Rename the "xx" key below to your language code (e.g. .de).
@@ -4162,10 +4123,9 @@ repomix.sh
 114:     rankingNone: "",
 115:     rankingError: ""
 116: };
-````
+</file>
 
-## File: web/README.md
-````markdown
+<file path="web/README.md">
  1: # openmu-simple-web
  2: This is simple website for OpenMU. 
  3: 
@@ -4256,10 +4216,9 @@ repomix.sh
 88: ---
 89: More info about OpenMU project you will find here:
 90: https://github.com/MUnique/OpenMU
-````
+</file>
 
-## File: .env.example
-````
+<file path=".env.example">
  1: # Red Config
  2: RESOLVE_IP=
  3: 
@@ -4291,10 +4250,9 @@ repomix.sh
 29: CLIENT_VITE_PORT=4173   # Puerto del cliente web (vite preview) → http://localhost:4173/online
 30: CLIENT_PROXY_PORT=3000  # Puerto del bridge WS↔TCP
 31: VITE_SERVER_LIST_URL=
-````
+</file>
 
-## File: .gitignore
-````
+<file path=".gitignore">
 1: .env
 2: bin/
 3: obj/
@@ -4302,10 +4260,9 @@ repomix.sh
 5: web/obj/
 6: **/node_modules
 7: package-lock.json
-````
+</file>
 
-## File: web/Pages/Shared/_Layout.cshtml
-````razor
+<file path="web/Pages/Shared/_Layout.cshtml">
  1: @inject IConfiguration Configuration
  2: @{
  3:     // Single source of truth for the site languages + default (appsettings.json -> "Site").
@@ -4403,10 +4360,9 @@ repomix.sh
 95: </body>
 96: 
 97: </html>
-````
+</file>
 
-## File: web/wwwroot/content.js
-````javascript
+<file path="web/wwwroot/content.js">
  1: // Server-wide settings shared across pages (not language-specific).
  2: window.muConfig = {
  3:     // Reset cap of the server. Characters who reached it get a glowing reset badge
@@ -4477,10 +4433,9 @@ repomix.sh
 68:         ],
 69:     }
 70: };
-````
+</file>
 
-## File: web/appsettings.json
-````json
+<file path="web/appsettings.json">
  1: {
  2:   "ConnectionStrings": {
  3:     "DefaultConnection": "Host=localhost;Database=openmu;Username=postgres;Password=TwojeHaslo"
@@ -4504,10 +4459,9 @@ repomix.sh
 21:   },
 22:   "AllowedHosts": "*"
 23: }
-````
+</file>
 
-## File: docker-compose.yml
-````yaml
+<file path="docker-compose.yml">
   1: services:
   2:   openmu-startup:
   3:     image: munique/openmu
@@ -4642,4 +4596,6 @@ repomix.sh
 132: 
 133: networks:
 134:   openmu-network:
-````
+</file>
+
+</files>
