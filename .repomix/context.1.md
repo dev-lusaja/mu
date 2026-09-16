@@ -29,7 +29,7 @@ The content is organized as follows:
 ## Notes
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Files matching these patterns are excluded: **/*.png, **/*.env, **/node_modules/**
+- Files matching these patterns are excluded: **/*.png, **/*.env, **/node_modules/**, **/.repomix/**
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Line numbers have been added to the beginning of each line
@@ -291,340 +291,7 @@ repomix.sh
 4:   --output-show-line-numbers \
 5:   --output "./.repomix/context.md" \
 6:   --split-output=1mb \
-7:   --ignore "**/*.png,**/*.env,**/node_modules/**"
-````
-
-## File: client/Dockerfile
-````dockerfile
- 1: FROM oven/bun:1.2-slim
- 2: 
- 3: RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
- 4: 
- 5: WORKDIR /app
- 6: 
- 7: # Clone repo at build time (shallow clone for speed)
- 8: #RUN git clone --depth 1 https://github.com/Ignies/OpenMu-Client-Babylon.git .
- 9: RUN git clone --depth 1 https://github.com/dev-lusaja/OpenMu-Client-Babylon.git .
-10: 
-11: # Install dependencies
-12: RUN bun install
-13: 
-14: COPY entrypoint.sh /entrypoint.sh
-15: RUN chmod +x /entrypoint.sh
-16: 
-17: EXPOSE 4173 3000
-18: 
-19: ENTRYPOINT ["/entrypoint.sh"]
-````
-
-## File: client/entrypoint.sh
-````bash
- 1: #!/bin/bash
- 2: set -e
- 3: 
- 4: PREVIEW_PORT="${CLIENT_VITE_PORT:-4173}"
- 5: BUILD_MARKER="/app/dist/.build-done"
- 6: 
- 7: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
- 8: echo "🎨 Aplicando personalizaciones al cliente..."
- 9: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-10: # 1. Poner Modo de Video Clásico por defecto (Preajuste Clásica exacto)
-11: sed -i 's/lightingQuality: 1/lightingQuality: 0/' src/common/gameOptions.ts
-12: sed -i 's/materialQuality: 1/materialQuality: 0/' src/common/gameOptions.ts
-13: # 2. Desactivar la creación automática de "Local (OpenMU)" en serverConfig.ts
-14: sed -i 's/function seedsDefaultProfile(): boolean {/function seedsDefaultProfile(): boolean { return false;/' src/common/serverConfig.ts
-15: # 3. Zoom inicial más alejado (1700 en lugar de 1200)
-16: sed -i 's/const PORTED_DEFAULT_DISTANCE = 1200;/const PORTED_DEFAULT_DISTANCE = 1700;/' src/camera/recipes.ts
-17: # 4. Splash screen fijo de 2 segundos con fade-out suave
-18: sed -i 's|<div id="root"></div>|<div id="root"></div><div id="splash" style="position:fixed;inset:0;background:#000000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#e5c158;font-family:sans-serif;letter-spacing:2px;font-size:14px;z-index:99999;transition:opacity 0.6s ease-out;pointer-events:none;"><img src="./Data/Logo/logo.jpg" style="max-width:280px;width:60%;margin-bottom:18px;image-rendering:pixelated;" alt="MU Online"/><div>CARGANDO CLIENTE...</div></div><script>setTimeout(function(){var s=document.getElementById("splash");if(s){s.style.opacity="0";setTimeout(function(){s.remove()},600);}},3000);</script>|' index.html
-19: echo ""
-20: 
-21: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-22: echo "🔨 Building OpenMu-Client-Babylon (prod)..."
-23: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-24: bun run build
-25: echo "✅ Build completado"
-26: echo ""
-27: 
-28: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-29: echo "▶ Starting WS↔TCP proxy on port ${PORT:-3000}..."
-30: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-31: bun run proxy &
-32: PROXY_PID=$!
-33: 
-34: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-35: echo "▶ Starting preview server on port ${PREVIEW_PORT}..."
-36: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-37: bun run vite preview --host 0.0.0.0 --port "${PREVIEW_PORT}" --strictPort &
-38: PREVIEW_PID=$!
-39: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-40: echo "🌐 Client ready → http://localhost:${PREVIEW_PORT}/online"
-41: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-42: 
-43: # Monitorear ambos procesos; si uno cae, matar el otro y salir
-44: monitor() {
-45:   while true; do
-46:     for pid in $PROXY_PID $PREVIEW_PID; do
-47:       if ! kill -0 "$pid" 2>/dev/null; then
-48:         echo "Proceso $pid terminó — apagando contenedor"
-49:         kill $PROXY_PID $PREVIEW_PID 2>/dev/null || true
-50:         exit 1
-51:       fi
-52:     done
-53:     sleep 2
-54:   done
-55: }
-56: 
-57: trap 'kill $PROXY_PID $PREVIEW_PID 2>/dev/null; exit 0' SIGTERM SIGINT
-58: 
-59: monitor
-````
-
-## File: mu.sh
-````bash
-  1: #!/usr/bin/env bash
-  2: # =============================================================================
-  3: # mu.sh — Administrador de servicios OpenMU
-  4: # Uso: ./mu.sh [comando] [servicio...]
-  5: #      ./mu.sh            (modo interactivo)
-  6: # =============================================================================
-  7: 
-  8: set -euo pipefail
-  9: 
- 10: # ── Colores ──────────────────────────────────────────────────────────────────
- 11: RED='\033[0;31m'
- 12: GREEN='\033[0;32m'
- 13: YELLOW='\033[1;33m'
- 14: BLUE='\033[0;34m'
- 15: CYAN='\033[0;36m'
- 16: MAGENTA='\033[0;35m'
- 17: BOLD='\033[1m'
- 18: DIM='\033[2m'
- 19: RESET='\033[0m'
- 20: 
- 21: # ── Directorio del script ─────────────────────────────────────────────────────
- 22: SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
- 23: COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
- 24: DC="docker compose -f $COMPOSE_FILE"
- 25: 
- 26: # ── Servicios disponibles ─────────────────────────────────────────────────────
- 27: SERVICES=(
- 28:   "openmu-database"
- 29:   "openmu-db-backup"
- 30:   "openmu-startup"
- 31:   "openmu-web"
- 32:   "openmu-client"
- 33: )
- 34: 
- 35: SERVICE_LABELS=(
- 36:   "🗄️  Base de datos  (PostgreSQL)"
- 37:   "💾  Backups BD     (Cron Scheduler)"
- 38:   "⚙️  Servidor OpenMU"
- 39:   "🌐  Sitio web      (ASP.NET)"
- 40:   "🎮  Cliente web    (BabylonJS · Vite + Proxy)"
- 41: )
- 42: 
- 43: # =============================================================================
- 44: # Helpers
- 45: # =============================================================================
- 46: 
- 47: print_banner() {
- 48:   echo -e ""
- 49:   echo -e "${BOLD}${MAGENTA}  ╔═══════════════════════════════════════╗${RESET}"
- 50:   echo -e "${BOLD}${MAGENTA}  ║      🧙  OpenMU Service Manager       ║${RESET}"
- 51:   echo -e "${BOLD}${MAGENTA}  ╚═══════════════════════════════════════╝${RESET}"
- 52:   echo -e ""
- 53: }
- 54: 
- 55: print_status() {
- 56:   echo -e "${BOLD}${CYAN}  ► Estado actual de los contenedores${RESET}"
- 57:   echo -e "${DIM}  ──────────────────────────────────────────────────${RESET}"
- 58:   $DC ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}" 2>/dev/null | \
- 59:     awk 'NR==1 {print "  "$0} NR>1 {
- 60:       if ($0 ~ /Up/) printf "  \033[0;32m✔\033[0m %s\n", $0
- 61:       else if ($0 ~ /Exit|Exited/) printf "  \033[0;31m✘\033[0m %s\n", $0
- 62:       else printf "  \033[1;33m●\033[0m %s\n", $0
- 63:     }' || echo -e "${DIM}  (sin contenedores corriendo)${RESET}"
- 64:   echo ""
- 65: }
- 66: 
- 67: print_menu() {
- 68:   echo -e "${BOLD}  Comandos disponibles:${RESET}"
- 69:   echo -e "  ${GREEN}[1]${RESET} up       — Levantar servicios"
- 70:   echo -e "  ${RED}[2]${RESET} down     — Detener y remover servicios"
- 71:   echo -e "  ${YELLOW}[3]${RESET} restart  — Reiniciar servicios"
- 72:   echo -e "  ${BLUE}[4]${RESET} build    — Rebuild de imágenes + up"
- 73:   echo -e "  ${CYAN}[5]${RESET} logs     — Ver logs en tiempo real"
- 74:   echo -e "  ${MAGENTA}[6]${RESET} status   — Ver estado (ps)"
- 75:   echo -e "  ${DIM}[0]${RESET} exit     — Salir"
- 76:   echo ""
- 77: }
- 78: 
- 79: print_service_selector() {
- 80:   echo -e "${BOLD}  Selecciona servicios ${DIM}(Enter = todos)${RESET}${BOLD}:${RESET}"
- 81:   for i in "${!SERVICES[@]}"; do
- 82:     echo -e "  ${CYAN}[$((i+1))]${RESET} ${SERVICE_LABELS[$i]}"
- 83:   done
- 84:   echo -e "  ${DIM}[a]${RESET} Todos los servicios"
- 85:   echo ""
- 86: }
- 87: 
- 88: # Retorna lista de servicios seleccionados en $SELECTED
- 89: select_services() {
- 90:   print_service_selector
- 91:   echo -ne "${BOLD}  Opción(es) ${DIM}[ej: 1 3 4 | a | Enter para todos]${RESET}${BOLD}: ${RESET}"
- 92:   read -r raw
- 93: 
- 94:   SELECTED=()
- 95:   if [[ -z "$raw" || "$raw" == "a" ]]; then
- 96:     # todos
- 97:     return
- 98:   fi
- 99: 
-100:   for token in $raw; do
-101:     if [[ "$token" =~ ^[0-9]+$ ]]; then
-102:       idx=$((token - 1))
-103:       if [[ $idx -ge 0 && $idx -lt ${#SERVICES[@]} ]]; then
-104:         SELECTED+=("${SERVICES[$idx]}")
-105:       else
-106:         echo -e "${YELLOW}  ⚠ Índice '$token' inválido, ignorado.${RESET}"
-107:       fi
-108:     fi
-109:   done
-110: }
-111: 
-112: log_action() {
-113:   local verb="$1"; shift
-114:   echo -e "\n${BOLD}${BLUE}  ┌─ $verb ${DIM}$(date '+%H:%M:%S')${RESET}"
-115:   if [[ ${#@} -gt 0 ]]; then
-116:     echo -e "${BLUE}  │  Servicios: ${CYAN}$*${RESET}"
-117:   else
-118:     echo -e "${BLUE}  │  Servicios: ${CYAN}todos${RESET}"
-119:   fi
-120:   echo -e "${BLUE}  └──────────────────────────────────────────${RESET}\n"
-121: }
-122: 
-123: # =============================================================================
-124: # Acciones
-125: # =============================================================================
-126: 
-127: do_up() {
-128:   log_action "▲  UP" "$@"
-129:   $DC up -d "$@"
-130:   echo -e "\n${GREEN}  ✔ Servicios levantados.${RESET}"
-131:   print_status
-132: }
-133: 
-134: do_down() {
-135:   log_action "▼  DOWN" "$@"
-136:   if [[ ${#@} -eq 0 ]]; then
-137:     $DC down
-138:   else
-139:     $DC stop "$@"
-140:     $DC rm -f "$@"
-141:   fi
-142:   echo -e "\n${RED}  ✔ Servicios detenidos.${RESET}"
-143: }
-144: 
-145: do_restart() {
-146:   log_action "↺  RESTART" "$@"
-147:   if [[ ${#@} -eq 0 ]]; then
-148:     $DC restart
-149:   else
-150:     $DC restart "$@"
-151:   fi
-152:   echo -e "\n${YELLOW}  ✔ Servicios reiniciados.${RESET}"
-153:   print_status
-154: }
-155: 
-156: do_build() {
-157:   log_action "🔨 BUILD + UP" "$@"
-158:   $DC up -d --build "$@"
-159:   echo -e "\n${BLUE}  ✔ Build completado y servicios levantados.${RESET}"
-160:   print_status
-161: }
-162: 
-163: do_logs() {
-164:   log_action "📋 LOGS" "$@"
-165:   echo -e "${DIM}  (Ctrl+C para salir de los logs)${RESET}\n"
-166:   $DC logs -f --tail=100 "$@"
-167: }
-168: 
-169: do_status() {
-170:   print_status
-171: }
-172: 
-173: # =============================================================================
-174: # Modo no interactivo: ./mu.sh <comando> [servicio...]
-175: # =============================================================================
-176: 
-177: run_command() {
-178:   local cmd="$1"; shift
-179:   local svcs=("$@")
-180: 
-181:   case "$cmd" in
-182:     up)      do_up      "${svcs[@]}" ;;
-183:     down)    do_down    "${svcs[@]}" ;;
-184:     restart) do_restart "${svcs[@]}" ;;
-185:     build)   do_build   "${svcs[@]}" ;;
-186:     logs)    do_logs    "${svcs[@]}" ;;
-187:     status|ps) do_status ;;
-188:     *)
-189:       echo -e "${RED}  ✘ Comando desconocido: '$cmd'${RESET}"
-190:       echo -e "  Uso: $0 {up|down|restart|build|logs|status} [servicio...]"
-191:       exit 1
-192:       ;;
-193:   esac
-194: }
-195: 
-196: # =============================================================================
-197: # Modo interactivo
-198: # =============================================================================
-199: 
-200: interactive() {
-201:   while true; do
-202:     clear
-203:     print_banner
-204:     print_status
-205:     print_menu
-206: 
-207:     echo -ne "${BOLD}  Comando [0-6]: ${RESET}"
-208:     read -r choice
-209:     echo ""
-210: 
-211:     case "$choice" in
-212:       0) echo -e "${DIM}  Hasta luego.${RESET}\n"; exit 0 ;;
-213:       6) do_status; read -rp "  Presiona Enter para continuar..." ;;
-214:       1|2|3|4|5)
-215:         SELECTED=()
-216:         select_services
-217:         case "$choice" in
-218:           1) do_up      "${SELECTED[@]}" ;;
-219:           2) do_down    "${SELECTED[@]}" ;;
-220:           3) do_restart "${SELECTED[@]}" ;;
-221:           4) do_build   "${SELECTED[@]}" ;;
-222:           5) do_logs    "${SELECTED[@]}" ;;
-223:         esac
-224:         echo ""
-225:         read -rp "  Presiona Enter para continuar..." ;;
-226:       *)
-227:         echo -e "${YELLOW}  ⚠ Opción inválida.${RESET}"
-228:         sleep 1 ;;
-229:     esac
-230:   done
-231: }
-232: 
-233: # =============================================================================
-234: # Entry point
-235: # =============================================================================
-236: 
-237: if [[ $# -ge 1 ]]; then
-238:   # Modo CLI: ./mu.sh up openmu-client
-239:   run_command "$@"
-240: else
-241:   # Modo interactivo
-242:   interactive
-243: fi
+7:   --ignore "**/*.png,**/*.env,**/node_modules/**, **/.repomix/**"
 ````
 
 ## File: web/Data/OpenMuContext.cs
@@ -3863,49 +3530,337 @@ repomix.sh
 105: app.Run();
 ````
 
-## File: .env.example
-````
- 1: # Red Config
- 2: RESOLVE_IP=
- 3: 
- 4: # Admin Panel Config
- 5: ADMIN_PANEL_PORT=
- 6: OPENMU_ADMIN_USER=
- 7: OPENMU_ADMIN_PASSWORD=
- 8: OPENMU_ADMIN_TOTP_SECRET=
- 9: OPENMU_DATA_PATH=
+## File: client/Dockerfile
+````dockerfile
+ 1: FROM oven/bun:1.2-slim
+ 2: 
+ 3: RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+ 4: 
+ 5: WORKDIR /app
+ 6: 
+ 7: # Clone repo at build time (shallow clone for speed)
+ 8: #RUN git clone --depth 1 https://github.com/Ignies/OpenMu-Client-Babylon.git .
+ 9: RUN git clone --depth 1 https://github.com/dev-lusaja/OpenMu-Client-Babylon.git .
 10: 
-11: # Postgres Config
-12: OPENMU_DB_PATH=
-13: POSTGRES_PASSWORD=
-14: POSTGRES_USER=
-15: POSTGRES_DB=
+11: # Install dependencies
+12: RUN bun install
+13: 
+14: COPY entrypoint.sh /entrypoint.sh
+15: RUN chmod +x /entrypoint.sh
 16: 
-17: # Backup Config (Postgres)
-18: OPENMU_BACKUP_PATH=
-19: BACKUP_CRON_SCHEDULE="0 3 * * *"   # Cada 24 horas a las 03:00 AM (sintaxis cron: minuto hora día mes día_semana)
-20: BACKUP_RETENTION_DAYS=7            # Retener backups de los últimos N días
-21: BACKUP_RUN_ON_STARTUP=true         # Realizar un backup al arrancar el contenedor
-22: 
-23: # Web Config
-24: WEB_PORT=
-25: DB_HOST=
-26: TIMEZ=
-27: 
-28: # Client Config (OpenMu-Client-Babylon)
-29: CLIENT_VITE_PORT=4173   # Puerto del cliente web (vite preview) → http://localhost:4173/online
-30: CLIENT_PROXY_PORT=3000  # Puerto del bridge WS↔TCP
-31: VITE_SERVER_LIST_URL=
+17: EXPOSE 4173 3000
+18: 
+19: ENTRYPOINT ["/entrypoint.sh"]
 ````
 
-## File: .gitignore
+## File: client/entrypoint.sh
+````bash
+ 1: #!/bin/bash
+ 2: set -e
+ 3: 
+ 4: PREVIEW_PORT="${CLIENT_VITE_PORT:-4173}"
+ 5: BUILD_MARKER="/app/dist/.build-done"
+ 6: 
+ 7: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+ 8: echo "🎨 Aplicando personalizaciones al cliente..."
+ 9: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+10: # 1. Poner Modo de Video Clásico por defecto (Preajuste Clásica exacto)
+11: sed -i 's/lightingQuality: 1/lightingQuality: 0/' src/common/gameOptions.ts
+12: sed -i 's/materialQuality: 1/materialQuality: 0/' src/common/gameOptions.ts
+13: # 2. Desactivar la creación automática de "Local (OpenMU)" en serverConfig.ts
+14: sed -i 's/function seedsDefaultProfile(): boolean {/function seedsDefaultProfile(): boolean { return false;/' src/common/serverConfig.ts
+15: # 3. Zoom inicial más alejado (1700 en lugar de 1200)
+16: sed -i 's/const PORTED_DEFAULT_DISTANCE = 1200;/const PORTED_DEFAULT_DISTANCE = 1700;/' src/camera/recipes.ts
+17: # 4. Splash screen fijo de 2 segundos con fade-out suave
+18: sed -i 's|<div id="root"></div>|<div id="root"></div><div id="splash" style="position:fixed;inset:0;background:#000000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#e5c158;font-family:sans-serif;letter-spacing:2px;font-size:14px;z-index:99999;transition:opacity 0.6s ease-out;pointer-events:none;"><img src="./Data/Logo/logo.jpg" style="max-width:280px;width:60%;margin-bottom:18px;image-rendering:pixelated;" alt="MU Online"/><div>CARGANDO CLIENTE...</div></div><script>setTimeout(function(){var s=document.getElementById("splash");if(s){s.style.opacity="0";setTimeout(function(){s.remove()},600);}},3000);</script>|' index.html
+19: echo ""
+20: 
+21: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+22: echo "🔨 Building OpenMu-Client-Babylon (prod)..."
+23: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+24: bun run build
+25: echo "✅ Build completado"
+26: echo ""
+27: 
+28: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+29: echo "▶ Starting WS↔TCP proxy on port ${PORT:-3000}..."
+30: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+31: bun run proxy &
+32: PROXY_PID=$!
+33: 
+34: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+35: echo "▶ Starting preview server on port ${PREVIEW_PORT}..."
+36: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+37: bun run vite preview --host 0.0.0.0 --port "${PREVIEW_PORT}" --strictPort &
+38: PREVIEW_PID=$!
+39: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+40: echo "🌐 Client ready → http://localhost:${PREVIEW_PORT}/online"
+41: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+42: 
+43: # Monitorear ambos procesos; si uno cae, matar el otro y salir
+44: monitor() {
+45:   while true; do
+46:     for pid in $PROXY_PID $PREVIEW_PID; do
+47:       if ! kill -0 "$pid" 2>/dev/null; then
+48:         echo "Proceso $pid terminó — apagando contenedor"
+49:         kill $PROXY_PID $PREVIEW_PID 2>/dev/null || true
+50:         exit 1
+51:       fi
+52:     done
+53:     sleep 2
+54:   done
+55: }
+56: 
+57: trap 'kill $PROXY_PID $PREVIEW_PID 2>/dev/null; exit 0' SIGTERM SIGINT
+58: 
+59: monitor
 ````
-1: .env
-2: bin/
-3: obj/
-4: web/bin/
-5: web/obj/
-6: ./node_modules
+
+## File: mu.sh
+````bash
+  1: #!/usr/bin/env bash
+  2: # =============================================================================
+  3: # mu.sh — Administrador de servicios OpenMU
+  4: # Uso: ./mu.sh [comando] [servicio...]
+  5: #      ./mu.sh            (modo interactivo)
+  6: # =============================================================================
+  7: 
+  8: set -euo pipefail
+  9: 
+ 10: # ── Colores ──────────────────────────────────────────────────────────────────
+ 11: RED='\033[0;31m'
+ 12: GREEN='\033[0;32m'
+ 13: YELLOW='\033[1;33m'
+ 14: BLUE='\033[0;34m'
+ 15: CYAN='\033[0;36m'
+ 16: MAGENTA='\033[0;35m'
+ 17: BOLD='\033[1m'
+ 18: DIM='\033[2m'
+ 19: RESET='\033[0m'
+ 20: 
+ 21: # ── Directorio del script ─────────────────────────────────────────────────────
+ 22: SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ 23: COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
+ 24: DC="docker compose -f $COMPOSE_FILE"
+ 25: 
+ 26: # ── Servicios disponibles ─────────────────────────────────────────────────────
+ 27: SERVICES=(
+ 28:   "openmu-database"
+ 29:   "openmu-db-backup"
+ 30:   "openmu-startup"
+ 31:   "openmu-web"
+ 32:   "openmu-client"
+ 33: )
+ 34: 
+ 35: SERVICE_LABELS=(
+ 36:   "🗄️  Base de datos  (PostgreSQL)"
+ 37:   "💾  Backups BD     (Cron Scheduler)"
+ 38:   "⚙️  Servidor OpenMU"
+ 39:   "🌐  Sitio web      (ASP.NET)"
+ 40:   "🎮  Cliente web    (BabylonJS · Vite + Proxy)"
+ 41: )
+ 42: 
+ 43: # =============================================================================
+ 44: # Helpers
+ 45: # =============================================================================
+ 46: 
+ 47: print_banner() {
+ 48:   echo -e ""
+ 49:   echo -e "${BOLD}${MAGENTA}  ╔═══════════════════════════════════════╗${RESET}"
+ 50:   echo -e "${BOLD}${MAGENTA}  ║      🧙  OpenMU Service Manager       ║${RESET}"
+ 51:   echo -e "${BOLD}${MAGENTA}  ╚═══════════════════════════════════════╝${RESET}"
+ 52:   echo -e ""
+ 53: }
+ 54: 
+ 55: print_status() {
+ 56:   echo -e "${BOLD}${CYAN}  ► Estado actual de los contenedores${RESET}"
+ 57:   echo -e "${DIM}  ──────────────────────────────────────────────────${RESET}"
+ 58:   $DC ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}" 2>/dev/null | \
+ 59:     awk 'NR==1 {print "  "$0} NR>1 {
+ 60:       if ($0 ~ /Up/) printf "  \033[0;32m✔\033[0m %s\n", $0
+ 61:       else if ($0 ~ /Exit|Exited/) printf "  \033[0;31m✘\033[0m %s\n", $0
+ 62:       else printf "  \033[1;33m●\033[0m %s\n", $0
+ 63:     }' || echo -e "${DIM}  (sin contenedores corriendo)${RESET}"
+ 64:   echo ""
+ 65: }
+ 66: 
+ 67: print_menu() {
+ 68:   echo -e "${BOLD}  Comandos disponibles:${RESET}"
+ 69:   echo -e "  ${GREEN}[1]${RESET} up       — Levantar servicios"
+ 70:   echo -e "  ${RED}[2]${RESET} down     — Detener y remover servicios"
+ 71:   echo -e "  ${YELLOW}[3]${RESET} restart  — Reiniciar servicios"
+ 72:   echo -e "  ${BLUE}[4]${RESET} build    — Rebuild de imágenes + up"
+ 73:   echo -e "  ${CYAN}[5]${RESET} logs     — Ver logs en tiempo real"
+ 74:   echo -e "  ${MAGENTA}[6]${RESET} status   — Ver estado (ps)"
+ 75:   echo -e "  ${DIM}[0]${RESET} exit     — Salir"
+ 76:   echo ""
+ 77: }
+ 78: 
+ 79: print_service_selector() {
+ 80:   echo -e "${BOLD}  Selecciona servicios ${DIM}(Enter = todos)${RESET}${BOLD}:${RESET}"
+ 81:   for i in "${!SERVICES[@]}"; do
+ 82:     echo -e "  ${CYAN}[$((i+1))]${RESET} ${SERVICE_LABELS[$i]}"
+ 83:   done
+ 84:   echo -e "  ${DIM}[a]${RESET} Todos los servicios"
+ 85:   echo ""
+ 86: }
+ 87: 
+ 88: # Retorna lista de servicios seleccionados en $SELECTED
+ 89: select_services() {
+ 90:   print_service_selector
+ 91:   echo -ne "${BOLD}  Opción(es) ${DIM}[ej: 1 3 4 | a | Enter para todos]${RESET}${BOLD}: ${RESET}"
+ 92:   read -r raw
+ 93: 
+ 94:   SELECTED=()
+ 95:   if [[ -z "$raw" || "$raw" == "a" ]]; then
+ 96:     # todos
+ 97:     return
+ 98:   fi
+ 99: 
+100:   for token in $raw; do
+101:     if [[ "$token" =~ ^[0-9]+$ ]]; then
+102:       idx=$((token - 1))
+103:       if [[ $idx -ge 0 && $idx -lt ${#SERVICES[@]} ]]; then
+104:         SELECTED+=("${SERVICES[$idx]}")
+105:       else
+106:         echo -e "${YELLOW}  ⚠ Índice '$token' inválido, ignorado.${RESET}"
+107:       fi
+108:     fi
+109:   done
+110: }
+111: 
+112: log_action() {
+113:   local verb="$1"; shift
+114:   echo -e "\n${BOLD}${BLUE}  ┌─ $verb ${DIM}$(date '+%H:%M:%S')${RESET}"
+115:   if [[ ${#@} -gt 0 ]]; then
+116:     echo -e "${BLUE}  │  Servicios: ${CYAN}$*${RESET}"
+117:   else
+118:     echo -e "${BLUE}  │  Servicios: ${CYAN}todos${RESET}"
+119:   fi
+120:   echo -e "${BLUE}  └──────────────────────────────────────────${RESET}\n"
+121: }
+122: 
+123: # =============================================================================
+124: # Acciones
+125: # =============================================================================
+126: 
+127: do_up() {
+128:   log_action "▲  UP" "$@"
+129:   $DC up -d "$@"
+130:   echo -e "\n${GREEN}  ✔ Servicios levantados.${RESET}"
+131:   print_status
+132: }
+133: 
+134: do_down() {
+135:   log_action "▼  DOWN" "$@"
+136:   if [[ ${#@} -eq 0 ]]; then
+137:     $DC down
+138:   else
+139:     $DC stop "$@"
+140:     $DC rm -f "$@"
+141:   fi
+142:   echo -e "\n${RED}  ✔ Servicios detenidos.${RESET}"
+143: }
+144: 
+145: do_restart() {
+146:   log_action "↺  RESTART" "$@"
+147:   if [[ ${#@} -eq 0 ]]; then
+148:     $DC restart
+149:   else
+150:     $DC restart "$@"
+151:   fi
+152:   echo -e "\n${YELLOW}  ✔ Servicios reiniciados.${RESET}"
+153:   print_status
+154: }
+155: 
+156: do_build() {
+157:   log_action "🔨 BUILD + UP" "$@"
+158:   $DC up -d --build "$@"
+159:   echo -e "\n${BLUE}  ✔ Build completado y servicios levantados.${RESET}"
+160:   print_status
+161: }
+162: 
+163: do_logs() {
+164:   log_action "📋 LOGS" "$@"
+165:   echo -e "${DIM}  (Ctrl+C para salir de los logs)${RESET}\n"
+166:   $DC logs -f --tail=100 "$@"
+167: }
+168: 
+169: do_status() {
+170:   print_status
+171: }
+172: 
+173: # =============================================================================
+174: # Modo no interactivo: ./mu.sh <comando> [servicio...]
+175: # =============================================================================
+176: 
+177: run_command() {
+178:   local cmd="$1"; shift
+179:   local svcs=("$@")
+180: 
+181:   case "$cmd" in
+182:     up)      do_up      "${svcs[@]}" ;;
+183:     down)    do_down    "${svcs[@]}" ;;
+184:     restart) do_restart "${svcs[@]}" ;;
+185:     build)   do_build   "${svcs[@]}" ;;
+186:     logs)    do_logs    "${svcs[@]}" ;;
+187:     status|ps) do_status ;;
+188:     *)
+189:       echo -e "${RED}  ✘ Comando desconocido: '$cmd'${RESET}"
+190:       echo -e "  Uso: $0 {up|down|restart|build|logs|status} [servicio...]"
+191:       exit 1
+192:       ;;
+193:   esac
+194: }
+195: 
+196: # =============================================================================
+197: # Modo interactivo
+198: # =============================================================================
+199: 
+200: interactive() {
+201:   while true; do
+202:     clear
+203:     print_banner
+204:     print_status
+205:     print_menu
+206: 
+207:     echo -ne "${BOLD}  Comando [0-6]: ${RESET}"
+208:     read -r choice
+209:     echo ""
+210: 
+211:     case "$choice" in
+212:       0) echo -e "${DIM}  Hasta luego.${RESET}\n"; exit 0 ;;
+213:       6) do_status; read -rp "  Presiona Enter para continuar..." ;;
+214:       1|2|3|4|5)
+215:         SELECTED=()
+216:         select_services
+217:         case "$choice" in
+218:           1) do_up      "${SELECTED[@]}" ;;
+219:           2) do_down    "${SELECTED[@]}" ;;
+220:           3) do_restart "${SELECTED[@]}" ;;
+221:           4) do_build   "${SELECTED[@]}" ;;
+222:           5) do_logs    "${SELECTED[@]}" ;;
+223:         esac
+224:         echo ""
+225:         read -rp "  Presiona Enter para continuar..." ;;
+226:       *)
+227:         echo -e "${YELLOW}  ⚠ Opción inválida.${RESET}"
+228:         sleep 1 ;;
+229:     esac
+230:   done
+231: }
+232: 
+233: # =============================================================================
+234: # Entry point
+235: # =============================================================================
+236: 
+237: if [[ $# -ge 1 ]]; then
+238:   # Modo CLI: ./mu.sh up openmu-client
+239:   run_command "$@"
+240: else
+241:   # Modo interactivo
+242:   interactive
+243: fi
 ````
 
 ## File: web/wwwroot/js/index.js
@@ -4301,6 +4256,52 @@ repomix.sh
 88: ---
 89: More info about OpenMU project you will find here:
 90: https://github.com/MUnique/OpenMU
+````
+
+## File: .env.example
+````
+ 1: # Red Config
+ 2: RESOLVE_IP=
+ 3: 
+ 4: # Admin Panel Config
+ 5: ADMIN_PANEL_PORT=
+ 6: OPENMU_ADMIN_USER=
+ 7: OPENMU_ADMIN_PASSWORD=
+ 8: OPENMU_ADMIN_TOTP_SECRET=
+ 9: OPENMU_DATA_PATH=
+10: 
+11: # Postgres Config
+12: OPENMU_DB_PATH=
+13: POSTGRES_PASSWORD=
+14: POSTGRES_USER=
+15: POSTGRES_DB=
+16: 
+17: # Backup Config (Postgres)
+18: OPENMU_BACKUP_PATH=
+19: BACKUP_CRON_SCHEDULE="0 3 * * *"   # Cada 24 horas a las 03:00 AM (sintaxis cron: minuto hora día mes día_semana)
+20: BACKUP_RETENTION_DAYS=7            # Retener backups de los últimos N días
+21: BACKUP_RUN_ON_STARTUP=true         # Realizar un backup al arrancar el contenedor
+22: 
+23: # Web Config
+24: WEB_PORT=
+25: DB_HOST=
+26: TIMEZ=
+27: 
+28: # Client Config (OpenMu-Client-Babylon)
+29: CLIENT_VITE_PORT=4173   # Puerto del cliente web (vite preview) → http://localhost:4173/online
+30: CLIENT_PROXY_PORT=3000  # Puerto del bridge WS↔TCP
+31: VITE_SERVER_LIST_URL=
+````
+
+## File: .gitignore
+````
+1: .env
+2: bin/
+3: obj/
+4: web/bin/
+5: web/obj/
+6: **/node_modules
+7: package-lock.json
 ````
 
 ## File: web/Pages/Shared/_Layout.cshtml
