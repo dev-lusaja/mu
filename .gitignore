@@ -3,3 +3,5 @@ bin/
 obj/
 web/bin/
 web/obj/
+**/node_modules
+package-lock.json

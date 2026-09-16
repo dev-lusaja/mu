@@ -22,7 +22,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "🔨 Building OpenMu-Client-Babylon (prod)..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 bun run build
-echo "✅ Build completado y cacheado"
+echo "✅ Build completado"
 echo ""
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

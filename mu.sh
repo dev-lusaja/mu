@@ -26,6 +26,7 @@ DC="docker compose -f $COMPOSE_FILE"
 # ── Servicios disponibles ─────────────────────────────────────────────────────
 SERVICES=(
   "openmu-database"
+  "openmu-db-backup"
   "openmu-startup"
   "openmu-web"
   "openmu-client"
@@ -33,6 +34,7 @@ SERVICES=(
 
 SERVICE_LABELS=(
   "🗄️  Base de datos  (PostgreSQL)"
+  "💾  Backups BD     (Cron Scheduler)"
   "⚙️  Servidor OpenMU"
   "🌐  Sitio web      (ASP.NET)"
   "🎮  Cliente web    (BabylonJS · Vite + Proxy)"

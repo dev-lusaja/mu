@@ -5,7 +5,8 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Clone repo at build time (shallow clone for speed)
-RUN git clone --depth 1 https://github.com/Ignies/OpenMu-Client-Babylon.git .
+#RUN git clone --depth 1 https://github.com/Ignies/OpenMu-Client-Babylon.git .
+RUN git clone --depth 1 https://github.com/dev-lusaja/OpenMu-Client-Babylon.git .
 
 # Install dependencies
 RUN bun install

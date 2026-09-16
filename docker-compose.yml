@@ -38,7 +38,7 @@ services:
       - openmu-database
 
   openmu-database:
-    image: postgres:15-alpine
+    image: postgres:16-bookworm
     container_name: openmu-database
     env_file:
       - .env
@@ -50,6 +50,37 @@ services:
       - openmu-network
     volumes:
       - ${OPENMU_DB_PATH}:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  openmu-db-backup:
+    build:
+      context: ./backup
+      dockerfile: Dockerfile
+    image: openmu-db-backup:latest
+    container_name: openmu-db-backup
+    restart: unless-stopped
+    networks:
+      - openmu-network
+    environment:
+      - PGHOST=openmu-database
+      - PGUSER=${POSTGRES_USER}
+      - PGPASSWORD=${POSTGRES_PASSWORD}
+      - PGDATABASE=${POSTGRES_DB}
+      - BACKUP_DIR=/backups
+      - BACKUP_CRON_SCHEDULE=${BACKUP_CRON_SCHEDULE}
+      - RETENTION_DAYS=${BACKUP_RETENTION_DAYS}
+      - RUN_ON_STARTUP=${BACKUP_RUN_ON_STARTUP}
+      - TZ=${TIMEZ}
+    volumes:
+      - ${OPENMU_BACKUP_PATH}:/backups
+    depends_on:
+      openmu-database:
+        condition: service_healthy
 
   openmu-web:
     image: openmu-web:latest
@@ -70,6 +101,9 @@ services:
     networks:
       - openmu-network
     restart: always
+    depends_on:
+      openmu-database:
+        condition: service_healthy
 
   openmu-client:
     image: openmu-client:latest
@@ -90,17 +124,11 @@ services:
       # ALLOW_TARGETS vacío = acepta cualquier host (solo para dev local)
       - ALLOW_TARGETS=
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:5432/${POSTGRES_DB}
-      # Desactiva la lista de GitHub de MU Ignies
-      - VITE_SERVER_LIST_URL=https://gist.githubusercontent.com/dev-lusaja/b19f558494d74ce7583801d9d7e4a4fd/raw/2b52d807944b81356fd4b08b4f6e3ce4ff9927f9/devMU.md
-      # Datos de tu Connect Server
-      # - VITE_CS_HOST=${RESOLVE_IP}
-      # - VITE_CS_PORT=44405
-      # Datos de tu WebSocket Proxy
-      # - VITE_WS_HOST=ws://${RESOLVE_IP}
-      # - VITE_WS_PORT=3000
+      - VITE_SERVER_LIST_URL=${VITE_SERVER_LIST_URL}
     volumes:
       - ${CLIENT_DIST_PATH}:/app/dist # Caché del build: persiste entre reinicios
     restart: unless-stopped
+
 
 networks:
   openmu-network:

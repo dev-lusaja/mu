@@ -1,0 +1,25 @@
+{
+  "name": "mu",
+  "version": "1.0.0",
+  "description": "Private mu server with opemMU",
+  "keywords": [
+    "mu"
+  ],
+  "homepage": "https://github.com/dev-lusaja/mu#readme",
+  "bugs": {
+    "url": "https://github.com/dev-lusaja/mu/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-lusaja/mu.git"
+  },
+  "author": "devlusaja",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "code:context": "bash ./repomix.sh"
+  },
+  "devDependencies": {
+    "repomix": "^1.18.0"
+  }
+}
