@@ -63,15 +63,16 @@ async function loadWidgetRankings() {
         }
 
         const topPlayers = players.slice(0, 5);
-        let html = '<table class="mini-table"><thead><tr><th>#</th><th>Name</th><th>Class</th><th>Level</th></tr></thead><tbody>';
+        let html = '<table class="mini-table"><thead><tr><th>#</th><th>Name</th><th>Class</th><th>Level</th><th>Resets</th></tr></thead><tbody>';
 
         topPlayers.forEach((p, idx) => {
             const rankClass = idx === 0 ? 'gold' : (idx === 1 ? 'silver' : (idx === 2 ? 'bronze' : ''));
             html += `<tr>
                 <td><span class="rank-num ${rankClass}">${idx + 1}</span></td>
                 <td class="char-name">${p.name || 'Hero'}</td>
-                <td>${p.characterClass || 'Class'}</td>
-                <td><b>${p.level}</b> <span class="reset-badge">${p.resets} R</span></td>
+                <td>${p.className || p.characterClass || 'Class'}</td>
+                <td><b>${p.level}</b></td>
+                <td><span class="reset-badge">${p.resets} RR</span></td>
             </tr>`;
         });
 
