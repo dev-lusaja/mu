@@ -141,6 +141,7 @@ public static class EventsEndpoints
     /// </summary>
     private static async Task<TimeZoneInfo> ResolveServerTimeZoneAsync(System.Data.Common.DbConnection connection, ILogger logger)
     {
+        var limaTz = GetLimaTimeZoneInfo();
         string? tzId;
         try
         {
@@ -150,12 +151,12 @@ public static class EventsEndpoints
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Could not read SystemConfiguration.TimeZoneId; falling back to UTC.");
-            return TimeZoneInfo.Utc;
+            logger.LogWarning(ex, "Could not read SystemConfiguration.TimeZoneId; falling back to America/Lima.");
+            return limaTz;
         }
 
-        if (string.IsNullOrWhiteSpace(tzId))
-            return TimeZoneInfo.Utc;
+        if (string.IsNullOrWhiteSpace(tzId) || tzId.Equals("UTC", StringComparison.OrdinalIgnoreCase))
+            return limaTz;
 
         try
         {
@@ -163,8 +164,27 @@ public static class EventsEndpoints
         }
         catch (Exception ex) when (ex is TimeZoneNotFoundException or InvalidTimeZoneException)
         {
-            logger.LogWarning(ex, "Could not resolve server time zone '{TimeZoneId}'; falling back to UTC.", tzId);
-            return TimeZoneInfo.Utc;
+            logger.LogWarning(ex, "Could not resolve server time zone '{TimeZoneId}'; falling back to America/Lima.", tzId);
+            return limaTz;
+        }
+    }
+
+    private static TimeZoneInfo GetLimaTimeZoneInfo()
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById("America/Lima");
+        }
+        catch
+        {
+            try
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            }
+            catch
+            {
+                return TimeZoneInfo.CreateCustomTimeZone("America/Lima", TimeSpan.FromHours(-5), "PET", "PET");
+            }
         }
     }
 }

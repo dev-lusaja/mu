@@ -1,42 +1,48 @@
 This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
 The content has been processed where line numbers have been added.
 
-# File Summary
+<file_summary>
+This section contains a summary of this file.
 
-## Purpose
+<purpose>
 This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
 It is designed to be easily consumable by AI systems for analysis, code review,
 or other automated processes.
+</purpose>
 
-## File Format
+<file_format>
 The content is organized as follows:
 1. This summary section
 2. Repository information
 3. Directory structure
 4. Repository files (if enabled)
 5. Multiple file entries, each consisting of:
-  a. A header with the file path (## File: path/to/file)
-  b. The full contents of the file in a code block
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
 
-## Usage Guidelines
+<usage_guidelines>
 - This file should be treated as read-only. Any changes should be made to the
   original repository files, not this packed version.
 - When processing this file, use the file path to distinguish
   between different files in the repository.
 - Be aware that this file may contain sensitive information. Handle it with
   the same level of security as you would the original repository.
+</usage_guidelines>
 
-## Notes
+<notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Files matching these patterns are excluded: **/*.png, **/*.env, **/node_modules/**
+- Files matching these patterns are excluded: **/*.png, **/*.env, **/node_modules/**, **/.repomix/**
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Line numbers have been added to the beginning of each line
 - Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
 
-# Directory Structure
-````
+</file_summary>
+
+<directory_structure>
 backup/
   backup.sh
   Dockerfile
@@ -108,12 +114,12 @@ docker-compose.yml
 mu.sh
 package.json
 repomix.sh
-````
+</directory_structure>
 
-# Files
+<files>
+This section contains the contents of the repository's files.
 
-## File: backup/backup.sh
-````bash
+<file path="backup/backup.sh">
  1: #!/bin/bash
  2: set -euo pipefail
  3: 
@@ -156,10 +162,9 @@ repomix.sh
 40: if [ "$DELETED" -gt 0 ]; then
 41:     log "Retención: Eliminado(s) ${DELETED} archivo(s) con más de ${RETENTION_DAYS} días de antigüedad."
 42: fi
-````
+</file>
 
-## File: backup/Dockerfile
-````dockerfile
+<file path="backup/Dockerfile">
  1: FROM postgres:16-bookworm
  2: 
  3: # Instalar el demonio cron
@@ -175,10 +180,9 @@ repomix.sh
 13: RUN chmod +x /usr/local/bin/backup.sh /usr/local/bin/restore.sh /usr/local/bin/entrypoint.sh
 14: 
 15: ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-````
+</file>
 
-## File: backup/entrypoint.sh
-````bash
+<file path="backup/entrypoint.sh">
  1: #!/bin/bash
  2: set -euo pipefail
  3: 
@@ -216,10 +220,9 @@ repomix.sh
 35: 
 36: echo "[CRON] Demonio cron activo y escuchando..."
 37: exec cron -f
-````
+</file>
 
-## File: backup/restore.sh
-````bash
+<file path="backup/restore.sh">
  1: #!/bin/bash
  2: set -euo pipefail
  3: 
@@ -252,10 +255,9 @@ repomix.sh
 30: echo "=========================================================="
 31: echo " [OK] Restauración completada con éxito."
 32: echo "=========================================================="
-````
+</file>
 
-## File: package.json
-````json
+<file path="package.json">
  1: {
  2:   "name": "mu",
  3:   "version": "1.0.0",
@@ -281,354 +283,9 @@ repomix.sh
 23:     "repomix": "^1.18.0"
 24:   }
 25: }
-````
+</file>
 
-## File: repomix.sh
-````bash
-1: #!/usr/bin/env bash
-2: 
-3: repomix --style markdown \
-4:   --output-show-line-numbers \
-5:   --output "./.repomix/context.md" \
-6:   --split-output=1mb \
-7:   --ignore "**/*.png,**/*.env,**/node_modules/**"
-````
-
-## File: client/Dockerfile
-````dockerfile
- 1: FROM oven/bun:1.2-slim
- 2: 
- 3: RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
- 4: 
- 5: WORKDIR /app
- 6: 
- 7: # Clone repo at build time (shallow clone for speed)
- 8: #RUN git clone --depth 1 https://github.com/Ignies/OpenMu-Client-Babylon.git .
- 9: RUN git clone --depth 1 https://github.com/dev-lusaja/OpenMu-Client-Babylon.git .
-10: 
-11: # Install dependencies
-12: RUN bun install
-13: 
-14: COPY entrypoint.sh /entrypoint.sh
-15: RUN chmod +x /entrypoint.sh
-16: 
-17: EXPOSE 4173 3000
-18: 
-19: ENTRYPOINT ["/entrypoint.sh"]
-````
-
-## File: client/entrypoint.sh
-````bash
- 1: #!/bin/bash
- 2: set -e
- 3: 
- 4: PREVIEW_PORT="${CLIENT_VITE_PORT:-4173}"
- 5: BUILD_MARKER="/app/dist/.build-done"
- 6: 
- 7: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
- 8: echo "🎨 Aplicando personalizaciones al cliente..."
- 9: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-10: # 1. Poner Modo de Video Clásico por defecto (Preajuste Clásica exacto)
-11: sed -i 's/lightingQuality: 1/lightingQuality: 0/' src/common/gameOptions.ts
-12: sed -i 's/materialQuality: 1/materialQuality: 0/' src/common/gameOptions.ts
-13: # 2. Desactivar la creación automática de "Local (OpenMU)" en serverConfig.ts
-14: sed -i 's/function seedsDefaultProfile(): boolean {/function seedsDefaultProfile(): boolean { return false;/' src/common/serverConfig.ts
-15: # 3. Zoom inicial más alejado (1700 en lugar de 1200)
-16: sed -i 's/const PORTED_DEFAULT_DISTANCE = 1200;/const PORTED_DEFAULT_DISTANCE = 1700;/' src/camera/recipes.ts
-17: # 4. Splash screen fijo de 2 segundos con fade-out suave
-18: sed -i 's|<div id="root"></div>|<div id="root"></div><div id="splash" style="position:fixed;inset:0;background:#000000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#e5c158;font-family:sans-serif;letter-spacing:2px;font-size:14px;z-index:99999;transition:opacity 0.6s ease-out;pointer-events:none;"><img src="./Data/Logo/logo.jpg" style="max-width:280px;width:60%;margin-bottom:18px;image-rendering:pixelated;" alt="MU Online"/><div>CARGANDO CLIENTE...</div></div><script>setTimeout(function(){var s=document.getElementById("splash");if(s){s.style.opacity="0";setTimeout(function(){s.remove()},600);}},3000);</script>|' index.html
-19: echo ""
-20: 
-21: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-22: echo "🔨 Building OpenMu-Client-Babylon (prod)..."
-23: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-24: bun run build
-25: echo "✅ Build completado"
-26: echo ""
-27: 
-28: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-29: echo "▶ Starting WS↔TCP proxy on port ${PORT:-3000}..."
-30: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-31: bun run proxy &
-32: PROXY_PID=$!
-33: 
-34: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-35: echo "▶ Starting preview server on port ${PREVIEW_PORT}..."
-36: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-37: bun run vite preview --host 0.0.0.0 --port "${PREVIEW_PORT}" --strictPort &
-38: PREVIEW_PID=$!
-39: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-40: echo "🌐 Client ready → http://localhost:${PREVIEW_PORT}/online"
-41: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-42: 
-43: # Monitorear ambos procesos; si uno cae, matar el otro y salir
-44: monitor() {
-45:   while true; do
-46:     for pid in $PROXY_PID $PREVIEW_PID; do
-47:       if ! kill -0 "$pid" 2>/dev/null; then
-48:         echo "Proceso $pid terminó — apagando contenedor"
-49:         kill $PROXY_PID $PREVIEW_PID 2>/dev/null || true
-50:         exit 1
-51:       fi
-52:     done
-53:     sleep 2
-54:   done
-55: }
-56: 
-57: trap 'kill $PROXY_PID $PREVIEW_PID 2>/dev/null; exit 0' SIGTERM SIGINT
-58: 
-59: monitor
-````
-
-## File: mu.sh
-````bash
-  1: #!/usr/bin/env bash
-  2: # =============================================================================
-  3: # mu.sh — Administrador de servicios OpenMU
-  4: # Uso: ./mu.sh [comando] [servicio...]
-  5: #      ./mu.sh            (modo interactivo)
-  6: # =============================================================================
-  7: 
-  8: set -euo pipefail
-  9: 
- 10: # ── Colores ──────────────────────────────────────────────────────────────────
- 11: RED='\033[0;31m'
- 12: GREEN='\033[0;32m'
- 13: YELLOW='\033[1;33m'
- 14: BLUE='\033[0;34m'
- 15: CYAN='\033[0;36m'
- 16: MAGENTA='\033[0;35m'
- 17: BOLD='\033[1m'
- 18: DIM='\033[2m'
- 19: RESET='\033[0m'
- 20: 
- 21: # ── Directorio del script ─────────────────────────────────────────────────────
- 22: SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
- 23: COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
- 24: DC="docker compose -f $COMPOSE_FILE"
- 25: 
- 26: # ── Servicios disponibles ─────────────────────────────────────────────────────
- 27: SERVICES=(
- 28:   "openmu-database"
- 29:   "openmu-db-backup"
- 30:   "openmu-startup"
- 31:   "openmu-web"
- 32:   "openmu-client"
- 33: )
- 34: 
- 35: SERVICE_LABELS=(
- 36:   "🗄️  Base de datos  (PostgreSQL)"
- 37:   "💾  Backups BD     (Cron Scheduler)"
- 38:   "⚙️  Servidor OpenMU"
- 39:   "🌐  Sitio web      (ASP.NET)"
- 40:   "🎮  Cliente web    (BabylonJS · Vite + Proxy)"
- 41: )
- 42: 
- 43: # =============================================================================
- 44: # Helpers
- 45: # =============================================================================
- 46: 
- 47: print_banner() {
- 48:   echo -e ""
- 49:   echo -e "${BOLD}${MAGENTA}  ╔═══════════════════════════════════════╗${RESET}"
- 50:   echo -e "${BOLD}${MAGENTA}  ║      🧙  OpenMU Service Manager       ║${RESET}"
- 51:   echo -e "${BOLD}${MAGENTA}  ╚═══════════════════════════════════════╝${RESET}"
- 52:   echo -e ""
- 53: }
- 54: 
- 55: print_status() {
- 56:   echo -e "${BOLD}${CYAN}  ► Estado actual de los contenedores${RESET}"
- 57:   echo -e "${DIM}  ──────────────────────────────────────────────────${RESET}"
- 58:   $DC ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}" 2>/dev/null | \
- 59:     awk 'NR==1 {print "  "$0} NR>1 {
- 60:       if ($0 ~ /Up/) printf "  \033[0;32m✔\033[0m %s\n", $0
- 61:       else if ($0 ~ /Exit|Exited/) printf "  \033[0;31m✘\033[0m %s\n", $0
- 62:       else printf "  \033[1;33m●\033[0m %s\n", $0
- 63:     }' || echo -e "${DIM}  (sin contenedores corriendo)${RESET}"
- 64:   echo ""
- 65: }
- 66: 
- 67: print_menu() {
- 68:   echo -e "${BOLD}  Comandos disponibles:${RESET}"
- 69:   echo -e "  ${GREEN}[1]${RESET} up       — Levantar servicios"
- 70:   echo -e "  ${RED}[2]${RESET} down     — Detener y remover servicios"
- 71:   echo -e "  ${YELLOW}[3]${RESET} restart  — Reiniciar servicios"
- 72:   echo -e "  ${BLUE}[4]${RESET} build    — Rebuild de imágenes + up"
- 73:   echo -e "  ${CYAN}[5]${RESET} logs     — Ver logs en tiempo real"
- 74:   echo -e "  ${MAGENTA}[6]${RESET} status   — Ver estado (ps)"
- 75:   echo -e "  ${DIM}[0]${RESET} exit     — Salir"
- 76:   echo ""
- 77: }
- 78: 
- 79: print_service_selector() {
- 80:   echo -e "${BOLD}  Selecciona servicios ${DIM}(Enter = todos)${RESET}${BOLD}:${RESET}"
- 81:   for i in "${!SERVICES[@]}"; do
- 82:     echo -e "  ${CYAN}[$((i+1))]${RESET} ${SERVICE_LABELS[$i]}"
- 83:   done
- 84:   echo -e "  ${DIM}[a]${RESET} Todos los servicios"
- 85:   echo ""
- 86: }
- 87: 
- 88: # Retorna lista de servicios seleccionados en $SELECTED
- 89: select_services() {
- 90:   print_service_selector
- 91:   echo -ne "${BOLD}  Opción(es) ${DIM}[ej: 1 3 4 | a | Enter para todos]${RESET}${BOLD}: ${RESET}"
- 92:   read -r raw
- 93: 
- 94:   SELECTED=()
- 95:   if [[ -z "$raw" || "$raw" == "a" ]]; then
- 96:     # todos
- 97:     return
- 98:   fi
- 99: 
-100:   for token in $raw; do
-101:     if [[ "$token" =~ ^[0-9]+$ ]]; then
-102:       idx=$((token - 1))
-103:       if [[ $idx -ge 0 && $idx -lt ${#SERVICES[@]} ]]; then
-104:         SELECTED+=("${SERVICES[$idx]}")
-105:       else
-106:         echo -e "${YELLOW}  ⚠ Índice '$token' inválido, ignorado.${RESET}"
-107:       fi
-108:     fi
-109:   done
-110: }
-111: 
-112: log_action() {
-113:   local verb="$1"; shift
-114:   echo -e "\n${BOLD}${BLUE}  ┌─ $verb ${DIM}$(date '+%H:%M:%S')${RESET}"
-115:   if [[ ${#@} -gt 0 ]]; then
-116:     echo -e "${BLUE}  │  Servicios: ${CYAN}$*${RESET}"
-117:   else
-118:     echo -e "${BLUE}  │  Servicios: ${CYAN}todos${RESET}"
-119:   fi
-120:   echo -e "${BLUE}  └──────────────────────────────────────────${RESET}\n"
-121: }
-122: 
-123: # =============================================================================
-124: # Acciones
-125: # =============================================================================
-126: 
-127: do_up() {
-128:   log_action "▲  UP" "$@"
-129:   $DC up -d "$@"
-130:   echo -e "\n${GREEN}  ✔ Servicios levantados.${RESET}"
-131:   print_status
-132: }
-133: 
-134: do_down() {
-135:   log_action "▼  DOWN" "$@"
-136:   if [[ ${#@} -eq 0 ]]; then
-137:     $DC down
-138:   else
-139:     $DC stop "$@"
-140:     $DC rm -f "$@"
-141:   fi
-142:   echo -e "\n${RED}  ✔ Servicios detenidos.${RESET}"
-143: }
-144: 
-145: do_restart() {
-146:   log_action "↺  RESTART" "$@"
-147:   if [[ ${#@} -eq 0 ]]; then
-148:     $DC restart
-149:   else
-150:     $DC restart "$@"
-151:   fi
-152:   echo -e "\n${YELLOW}  ✔ Servicios reiniciados.${RESET}"
-153:   print_status
-154: }
-155: 
-156: do_build() {
-157:   log_action "🔨 BUILD + UP" "$@"
-158:   $DC up -d --build "$@"
-159:   echo -e "\n${BLUE}  ✔ Build completado y servicios levantados.${RESET}"
-160:   print_status
-161: }
-162: 
-163: do_logs() {
-164:   log_action "📋 LOGS" "$@"
-165:   echo -e "${DIM}  (Ctrl+C para salir de los logs)${RESET}\n"
-166:   $DC logs -f --tail=100 "$@"
-167: }
-168: 
-169: do_status() {
-170:   print_status
-171: }
-172: 
-173: # =============================================================================
-174: # Modo no interactivo: ./mu.sh <comando> [servicio...]
-175: # =============================================================================
-176: 
-177: run_command() {
-178:   local cmd="$1"; shift
-179:   local svcs=("$@")
-180: 
-181:   case "$cmd" in
-182:     up)      do_up      "${svcs[@]}" ;;
-183:     down)    do_down    "${svcs[@]}" ;;
-184:     restart) do_restart "${svcs[@]}" ;;
-185:     build)   do_build   "${svcs[@]}" ;;
-186:     logs)    do_logs    "${svcs[@]}" ;;
-187:     status|ps) do_status ;;
-188:     *)
-189:       echo -e "${RED}  ✘ Comando desconocido: '$cmd'${RESET}"
-190:       echo -e "  Uso: $0 {up|down|restart|build|logs|status} [servicio...]"
-191:       exit 1
-192:       ;;
-193:   esac
-194: }
-195: 
-196: # =============================================================================
-197: # Modo interactivo
-198: # =============================================================================
-199: 
-200: interactive() {
-201:   while true; do
-202:     clear
-203:     print_banner
-204:     print_status
-205:     print_menu
-206: 
-207:     echo -ne "${BOLD}  Comando [0-6]: ${RESET}"
-208:     read -r choice
-209:     echo ""
-210: 
-211:     case "$choice" in
-212:       0) echo -e "${DIM}  Hasta luego.${RESET}\n"; exit 0 ;;
-213:       6) do_status; read -rp "  Presiona Enter para continuar..." ;;
-214:       1|2|3|4|5)
-215:         SELECTED=()
-216:         select_services
-217:         case "$choice" in
-218:           1) do_up      "${SELECTED[@]}" ;;
-219:           2) do_down    "${SELECTED[@]}" ;;
-220:           3) do_restart "${SELECTED[@]}" ;;
-221:           4) do_build   "${SELECTED[@]}" ;;
-222:           5) do_logs    "${SELECTED[@]}" ;;
-223:         esac
-224:         echo ""
-225:         read -rp "  Presiona Enter para continuar..." ;;
-226:       *)
-227:         echo -e "${YELLOW}  ⚠ Opción inválida.${RESET}"
-228:         sleep 1 ;;
-229:     esac
-230:   done
-231: }
-232: 
-233: # =============================================================================
-234: # Entry point
-235: # =============================================================================
-236: 
-237: if [[ $# -ge 1 ]]; then
-238:   # Modo CLI: ./mu.sh up openmu-client
-239:   run_command "$@"
-240: else
-241:   # Modo interactivo
-242:   interactive
-243: fi
-````
-
-## File: web/Data/OpenMuContext.cs
-````csharp
+<file path="web/Data/OpenMuContext.cs">
  1: using Microsoft.EntityFrameworkCore;
  2: using OpenMU_Web.Models;
  3: 
@@ -650,10 +307,9 @@ repomix.sh
 19:             .HasForeignKey(a => a.VaultId);
 20:     }
 21: }
-````
+</file>
 
-## File: web/Endpoints/ArmoryEndpoints.cs
-````csharp
+<file path="web/Endpoints/ArmoryEndpoints.cs">
   1: using System.Data;
   2: using System.Globalization;
   3: using System.Text;
@@ -981,10 +637,9 @@ repomix.sh
 325:         return " +" + rounded.ToString("0", CultureInfo.InvariantCulture);
 326:     }
 327: }
-````
+</file>
 
-## File: web/Endpoints/EventsEndpoints.cs
-````csharp
+<file path="web/Endpoints/EventsEndpoints.cs">
   1: using System.Data;
   2: using System.Text.Json;
   3: using Microsoft.AspNetCore.Mvc;
@@ -1155,10 +810,9 @@ repomix.sh
 168:         }
 169:     }
 170: }
-````
+</file>
 
-## File: web/Endpoints/PasswordEndpoints.cs
-````csharp
+<file path="web/Endpoints/PasswordEndpoints.cs">
  1: using Microsoft.AspNetCore.Mvc;
  2: using Microsoft.EntityFrameworkCore;
  3: using OpenMU_Web.Data;
@@ -1213,10 +867,9 @@ repomix.sh
 52:         });
 53:     }
 54: }
-````
+</file>
 
-## File: web/Endpoints/RankingEndpoints.cs
-````csharp
+<file path="web/Endpoints/RankingEndpoints.cs">
  1: using System.Data;
  2: using Microsoft.AspNetCore.Mvc;
  3: using Microsoft.EntityFrameworkCore;
@@ -1297,10 +950,9 @@ repomix.sh
 78:         });
 79:     }
 80: }
-````
+</file>
 
-## File: web/Endpoints/RegistrationEndpoints.cs
-````csharp
+<file path="web/Endpoints/RegistrationEndpoints.cs">
  1: using Microsoft.AspNetCore.Mvc;
  2: using Microsoft.EntityFrameworkCore;
  3: using OpenMU_Web.Data;
@@ -1393,10 +1045,9 @@ repomix.sh
 90:         });
 91:     }
 92: }
-````
+</file>
 
-## File: web/Models/Account.cs
-````csharp
+<file path="web/Models/Account.cs">
  1: using System.ComponentModel.DataAnnotations;
  2: using System.ComponentModel.DataAnnotations.Schema;
  3: 
@@ -1419,10 +1070,9 @@ repomix.sh
 20:     public string LanguageIsoCode { get; set; } = "en";
 21:     public Guid? VaultId { get; set; }
 22: }
-````
+</file>
 
-## File: web/Models/Character.cs
-````csharp
+<file path="web/Models/Character.cs">
  1: using System.ComponentModel.DataAnnotations;
  2: using System.ComponentModel.DataAnnotations.Schema;
  3: 
@@ -1436,10 +1086,9 @@ repomix.sh
 11:     public long Experience { get; set; }
 12:     public Guid CharacterClassId { get; set; }
 13: }
-````
+</file>
 
-## File: web/Models/ItemStorage.cs
-````csharp
+<file path="web/Models/ItemStorage.cs">
  1: using System.ComponentModel.DataAnnotations;
  2: using System.ComponentModel.DataAnnotations.Schema;
  3: 
@@ -1451,17 +1100,15 @@ repomix.sh
  9:     [Key] public Guid Id { get; set; }
 10:     public int Money { get; set; }
 11: }
-````
+</file>
 
-## File: web/Pages/_ViewStart.cshtml
-````razor
+<file path="web/Pages/_ViewStart.cshtml">
 1: @{
 2:     Layout = "_Layout";
 3: }
-````
+</file>
 
-## File: web/Pages/Armory.cshtml
-````razor
+<file path="web/Pages/Armory.cshtml">
  1: @page "/armory"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Armory";
@@ -1506,10 +1153,9 @@ repomix.sh
 42: @section Scripts {
 43:     <script src="/js/armory.js"></script>
 44: }
-````
+</file>
 
-## File: web/Pages/Changepass.cshtml
-````razor
+<file path="web/Pages/Changepass.cshtml">
  1: @page "/changepass"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Change Password";
@@ -1544,10 +1190,9 @@ repomix.sh
 32: @section Scripts {
 33:     <script src="/js/changepass.js"></script>
 34: }
-````
+</file>
 
-## File: web/Pages/Commands.cshtml
-````razor
+<file path="web/Pages/Commands.cshtml">
  1: @page "/commands"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Commands";
@@ -1569,10 +1214,9 @@ repomix.sh
 19: @section Scripts {
 20:     <script src="/js/commands.js"></script>
 21: }
-````
+</file>
 
-## File: web/Pages/Events.cshtml
-````razor
+<file path="web/Pages/Events.cshtml">
  1: @page "/events"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Events";
@@ -1598,10 +1242,9 @@ repomix.sh
 23: @section Scripts {
 24:     <script src="/js/events.js"></script>
 25: }
-````
+</file>
 
-## File: web/Pages/Index.cshtml
-````razor
+<file path="web/Pages/Index.cshtml">
  1: @page "/"
  2: @{
  3:     ViewData["Title"] = "OpenMU";
@@ -1639,10 +1282,9 @@ repomix.sh
 35: @section Scripts {
 36:     <script src="/js/index.js"></script>
 37: }
-````
+</file>
 
-## File: web/Pages/Register.cshtml
-````razor
+<file path="web/Pages/Register.cshtml">
  1: @page "/register"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Registration";
@@ -1690,10 +1332,9 @@ repomix.sh
 45: @section Scripts {
 46:     <script src="/js/register.js"></script>
 47: }
-````
+</file>
 
-## File: web/Pages/Stats.cshtml
-````razor
+<file path="web/Pages/Stats.cshtml">
  1: @page "/stats"
  2: @{
  3:     ViewData["Title"] = "OpenMU - Server Statistics";
@@ -1728,10 +1369,9 @@ repomix.sh
 32: @section Scripts {
 33:     <script src="/js/stats.js"></script>
 34: }
-````
+</file>
 
-## File: web/Services/RateLimiter.cs
-````csharp
+<file path="web/Services/RateLimiter.cs">
  1: using System.Collections.Concurrent;
  2: 
  3: namespace OpenMU_Web.Services;
@@ -1766,10 +1406,9 @@ repomix.sh
 32:             _store.TryRemove(key, out _);
 33:     }
 34: }
-````
+</file>
 
-## File: web/wwwroot/css/commands.css
-````css
+<file path="web/wwwroot/css/commands.css">
   1: .commands-intro {
   2:     text-align: center;
   3:     font-size: 0.9rem;
@@ -1874,10 +1513,9 @@ repomix.sh
 102:         white-space: normal;
 103:     }
 104: }
-````
+</file>
 
-## File: web/wwwroot/css/events.css
-````css
+<file path="web/wwwroot/css/events.css">
   1: .event-card {
   2:     background: rgba(0, 0, 0, 0.3);
   3:     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2056,10 +1694,9 @@ repomix.sh
 176:     color: #888;
 177:     font-size: 0.9rem;
 178: }
-````
+</file>
 
-## File: web/wwwroot/css/index.css
-````css
+<file path="web/wwwroot/css/index.css">
   1: .index-container {
   2:     max-width: 900px;
   3: }
@@ -2318,10 +1955,9 @@ repomix.sh
 256:         display: none;
 257:     }
 258: }
-````
+</file>
 
-## File: web/wwwroot/img/char-placeholder.svg
-````xml
+<file path="web/wwwroot/img/char-placeholder.svg">
  1: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="200" height="260" role="img" aria-label="Character">
  2:   <defs>
  3:     <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
@@ -2341,10 +1977,9 @@ repomix.sh
 17:   </g>
 18:   <text x="100" y="240" text-anchor="middle" fill="#777" font-family="Liberation Sans, Arial, sans-serif" font-size="14" letter-spacing="2">CHARACTER</text>
 19: </svg>
-````
+</file>
 
-## File: web/wwwroot/js/armory.js
-````javascript
+<file path="web/wwwroot/js/armory.js">
   1: // Equipment slot layout (paper doll): 3 columns x 4 rows.
   2: const SLOTS = [
   3:     { slot: 8, col: 1, row: 1, label: 'Pet' },      // Fenrir / pet - top left
@@ -2510,10 +2145,9 @@ repomix.sh
 163:     document.getElementById('charInput').value = initial;
 164:     loadCharacter(initial);
 165: }
-````
+</file>
 
-## File: web/wwwroot/js/changepass.js
-````javascript
+<file path="web/wwwroot/js/changepass.js">
  1: document.getElementById('changePassForm').addEventListener('submit', async (e) => {
  2:     e.preventDefault();
  3:     const btn = document.getElementById('submitBtn'), btnText = document.getElementById('btnText'),
@@ -2536,10 +2170,9 @@ repomix.sh
 20:         btnText.style.display = 'block'; btnLoader.style.display = 'none';
 21:     }
 22: });
-````
+</file>
 
-## File: web/wwwroot/js/commands.js
-````javascript
+<file path="web/wwwroot/js/commands.js">
  1: // Player (Normal) chat commands only. Descriptions live in the translation files
  2: // (keyed by descKey); this table only holds the command signature.
  3: const COMMAND_SECTIONS = [
@@ -2609,10 +2242,9 @@ repomix.sh
 67: // lang.js applies the data-i18n text and renders the language buttons; re-render the
 68: // command list (its descriptions live in the translation files) on every change.
 69: window.onLanguageChanged = renderCommands;
-````
+</file>
 
-## File: web/wwwroot/js/events.js
-````javascript
+<file path="web/wwwroot/js/events.js">
   1: async function checkServerStatus() {
   2:     const statusDot = document.getElementById('statusDot');
   3:     const statusText = document.getElementById('statusText');
@@ -2742,10 +2374,9 @@ repomix.sh
 127: loadEvents();
 128: setInterval(loadEvents, 60000);
 129: setInterval(updateCountdowns, 1000);
-````
+</file>
 
-## File: web/wwwroot/js/register.js
-````javascript
+<file path="web/wwwroot/js/register.js">
  1: document.getElementById('regForm').addEventListener('submit', async (e) => {
  2:     e.preventDefault();
  3:     const btn = document.getElementById('submitBtn'), btnText = document.getElementById('btnText'),
@@ -2768,10 +2399,9 @@ repomix.sh
 20:         btn.disabled = false; btnText.style.display = 'block'; btnLoader.style.display = 'none';
 21:     }
 22: });
-````
+</file>
 
-## File: web/wwwroot/js/stats.js
-````javascript
+<file path="web/wwwroot/js/stats.js">
  1: async function checkServerStatus() {
  2:     const statusDot = document.getElementById('statusDot');
  3:     const statusText = document.getElementById('statusText');
@@ -2833,10 +2463,9 @@ repomix.sh
 59: }
 60: 
 61: loadRanking();
-````
+</file>
 
-## File: web/wwwroot/en.js
-````javascript
+<file path="web/wwwroot/en.js">
   1: window.muTranslations = window.muTranslations || {};
   2: window.muTranslations.en = {
   3:     title: "OpenMU Registration",
@@ -2946,10 +2575,9 @@ repomix.sh
 107:     rankingNone: "No heroes found.",
 108:     rankingError: "Connection error."
 109: };
-````
+</file>
 
-## File: web/wwwroot/es.js
-````javascript
+<file path="web/wwwroot/es.js">
   1: window.muTranslations = window.muTranslations || {};
   2: window.muTranslations.es = {
   3:     title: "Registro OpenMU",
@@ -3059,10 +2687,9 @@ repomix.sh
 107:     rankingNone: "No se encontraron héroes.",
 108:     rankingError: "Error de conexión."
 109: };
-````
+</file>
 
-## File: web/wwwroot/style.css
-````css
+<file path="web/wwwroot/style.css">
   1: /* === VARIABLES === */
   2: :root {
   3:     --primary: #d4af37;
@@ -3704,10 +3331,9 @@ repomix.sh
 639:         font-size: 0.65rem;
 640:     }
 641: }
-````
+</file>
 
-## File: web/Dockerfile
-````dockerfile
+<file path="web/Dockerfile">
  1: FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
  2: WORKDIR /src
  3: 
@@ -3736,10 +3362,9 @@ repomix.sh
 26:   CMD wget -q --spider http://127.0.0.1:8080/ || exit 1
 27: 
 28: ENTRYPOINT ["dotnet", "OpenMU_Web.dll"]
-````
+</file>
 
-## File: web/OpenMU_Web.csproj
-````
+<file path="web/OpenMU_Web.csproj">
  1: <Project Sdk="Microsoft.NET.Sdk.Web">
  2:   <PropertyGroup>
  3:     <TargetFramework>net8.0</TargetFramework>
@@ -3752,10 +3377,9 @@ repomix.sh
 10:   <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 11: </ItemGroup>
 12: </Project>
-````
+</file>
 
-## File: web/Program.cs
-````csharp
+<file path="web/Program.cs">
   1: using Microsoft.EntityFrameworkCore;
   2: using System.Collections.Concurrent;
   3: using OpenMU_Web.Data;
@@ -3861,55 +3485,349 @@ repomix.sh
 103: });
 104: 
 105: app.Run();
-````
+</file>
 
-## File: .env.example
-````
- 1: # Red Config
- 2: RESOLVE_IP=
- 3: 
- 4: # Admin Panel Config
- 5: ADMIN_PANEL_PORT=
- 6: OPENMU_ADMIN_USER=
- 7: OPENMU_ADMIN_PASSWORD=
- 8: OPENMU_ADMIN_TOTP_SECRET=
- 9: OPENMU_DATA_PATH=
+<file path="client/Dockerfile">
+ 1: FROM oven/bun:1.2-slim
+ 2:
+ 3: RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+ 4:
+ 5: WORKDIR /app
+ 6:
+ 7: # Clone repo at build time (shallow clone for speed)
+ 8: #RUN git clone --depth 1 https://github.com/Ignies/OpenMu-Client-Babylon.git .
+ 9: RUN git clone --depth 1 https://github.com/dev-lusaja/OpenMu-Client-Babylon.git .
 10: 
-11: # Postgres Config
-12: OPENMU_DB_PATH=
-13: POSTGRES_PASSWORD=
-14: POSTGRES_USER=
-15: POSTGRES_DB=
+11: # Install dependencies
+12: RUN bun install
+13:
+14: COPY entrypoint.sh /entrypoint.sh
+15: RUN chmod +x /entrypoint.sh
 16: 
-17: # Backup Config (Postgres)
-18: OPENMU_BACKUP_PATH=
-19: BACKUP_CRON_SCHEDULE="0 3 * * *"   # Cada 24 horas a las 03:00 AM (sintaxis cron: minuto hora día mes día_semana)
-20: BACKUP_RETENTION_DAYS=7            # Retener backups de los últimos N días
-21: BACKUP_RUN_ON_STARTUP=true         # Realizar un backup al arrancar el contenedor
-22: 
-23: # Web Config
-24: WEB_PORT=
-25: DB_HOST=
-26: TIMEZ=
+17: EXPOSE 4173 3000
+18:
+19: ENTRYPOINT ["/entrypoint.sh"]
+</file>
+
+<file path="client/entrypoint.sh">
+ 1: #!/bin/bash
+ 2: set -e
+ 3:
+ 4: PREVIEW_PORT="${CLIENT_VITE_PORT:-4173}"
+ 5: BUILD_MARKER="/app/dist/.build-done"
+ 6:
+ 7: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+ 8: echo "🎨 Aplicando personalizaciones al cliente..."
+ 9: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+10: # 1. Poner Modo de Video Clásico por defecto (Preajuste Clásica exacto)
+11: sed -i 's/lightingQuality: 1/lightingQuality: 0/' src/common/gameOptions.ts
+12: sed -i 's/materialQuality: 1/materialQuality: 0/' src/common/gameOptions.ts
+13: # 2. Desactivar la creación automática de "Local (OpenMU)" en serverConfig.ts
+14: sed -i 's/function seedsDefaultProfile(): boolean {/function seedsDefaultProfile(): boolean { return false;/' src/common/serverConfig.ts
+15: # 3. Zoom inicial más alejado (1700 en lugar de 1200)
+16: sed -i 's/const PORTED_DEFAULT_DISTANCE = 1200;/const PORTED_DEFAULT_DISTANCE = 1700;/' src/camera/recipes.ts
+17: # 4. Splash screen fijo de 2 segundos con fade-out suave
+18: sed -i 's|<div id="root"></div>|<div id="root"></div><div id="splash" style="position:fixed;inset:0;background:#000000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#e5c158;font-family:sans-serif;letter-spacing:2px;font-size:14px;z-index:99999;transition:opacity 0.6s ease-out;pointer-events:none;"><img src="./Data/Logo/logo.jpg" style="max-width:280px;width:60%;margin-bottom:18px;image-rendering:pixelated;" alt="MU Online"/><div>CARGANDO CLIENTE...</div></div><script>setTimeout(function(){var s=document.getElementById("splash");if(s){s.style.opacity="0";setTimeout(function(){s.remove()},600);}},3000);</script>|' index.html
+19: echo ""
+20:
+21: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+22: echo "🔨 Building OpenMu-Client-Babylon (prod)..."
+23: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+24: bun run build
+25: echo "✅ Build completado"
+26: echo ""
 27: 
-28: # Client Config (OpenMu-Client-Babylon)
-29: CLIENT_VITE_PORT=4173   # Puerto del cliente web (vite preview) → http://localhost:4173/online
-30: CLIENT_PROXY_PORT=3000  # Puerto del bridge WS↔TCP
-31: VITE_SERVER_LIST_URL=
-````
+28: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+29: echo "▶ Starting WS↔TCP proxy on port ${PORT:-3000}..."
+30: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+31: bun run proxy &
+32: PROXY_PID=$!
+33:
+34: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+35: echo "▶ Starting preview server on port ${PREVIEW_PORT}..."
+36: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+37: bun run vite preview --host 0.0.0.0 --port "${PREVIEW_PORT}" --strictPort &
+38: PREVIEW_PID=$!
+39: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+40: echo "🌐 Client ready → http://localhost:${PREVIEW_PORT}/online"
+41: echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+42:
+43: # Monitorear ambos procesos; si uno cae, matar el otro y salir
+44: monitor() {
+45:   while true; do
+46:     for pid in $PROXY_PID $PREVIEW_PID; do
+47:       if ! kill -0 "$pid" 2>/dev/null; then
+48:         echo "Proceso $pid terminó — apagando contenedor"
+49:         kill $PROXY_PID $PREVIEW_PID 2>/dev/null || true
+50:         exit 1
+51:       fi
+52:     done
+53:     sleep 2
+54:   done
+55: }
+56:
+57: trap 'kill $PROXY_PID $PREVIEW_PID 2>/dev/null; exit 0' SIGTERM SIGINT
+58:
+59: monitor
+</file>
 
-## File: .gitignore
-````
-1: .env
-2: bin/
-3: obj/
-4: web/bin/
-5: web/obj/
-6: ./node_modules
-````
+<file path="mu.sh">
+  1: #!/usr/bin/env bash
+  2: # =============================================================================
+  3: # mu.sh — Administrador de servicios OpenMU
+  4: # Uso: ./mu.sh [comando] [servicio...]
+  5: #      ./mu.sh            (modo interactivo)
+  6: # =============================================================================
+  7:
+  8: set -euo pipefail
+  9:
+ 10: # ── Colores ──────────────────────────────────────────────────────────────────
+ 11: RED='\033[0;31m'
+ 12: GREEN='\033[0;32m'
+ 13: YELLOW='\033[1;33m'
+ 14: BLUE='\033[0;34m'
+ 15: CYAN='\033[0;36m'
+ 16: MAGENTA='\033[0;35m'
+ 17: BOLD='\033[1m'
+ 18: DIM='\033[2m'
+ 19: RESET='\033[0m'
+ 20:
+ 21: # ── Directorio del script ─────────────────────────────────────────────────────
+ 22: SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ 23: COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
+ 24: DC="docker compose -f $COMPOSE_FILE"
+ 25:
+ 26: # ── Servicios disponibles ─────────────────────────────────────────────────────
+ 27: SERVICES=(
+ 28:   "openmu-database"
+ 29:   "openmu-db-backup"
+ 30:   "openmu-startup"
+ 31:   "openmu-web"
+ 32:   "openmu-client"
+ 33: )
+ 34:
+ 35: SERVICE_LABELS=(
+ 36:   "🗄️  Base de datos  (PostgreSQL)"
+ 37:   "💾  Backups BD     (Cron Scheduler)"
+ 38:   "⚙️  Servidor OpenMU"
+ 39:   "🌐  Sitio web      (ASP.NET)"
+ 40:   "🎮  Cliente web    (BabylonJS · Vite + Proxy)"
+ 41: )
+ 42:
+ 43: # =============================================================================
+ 44: # Helpers
+ 45: # =============================================================================
+ 46:
+ 47: print_banner() {
+ 48:   echo -e ""
+ 49:   echo -e "${BOLD}${MAGENTA}  ╔═══════════════════════════════════════╗${RESET}"
+ 50:   echo -e "${BOLD}${MAGENTA}  ║      🧙  OpenMU Service Manager       ║${RESET}"
+ 51:   echo -e "${BOLD}${MAGENTA}  ╚═══════════════════════════════════════╝${RESET}"
+ 52:   echo -e ""
+ 53: }
+ 54:
+ 55: print_status() {
+ 56:   echo -e "${BOLD}${CYAN}  ► Estado actual de los contenedores${RESET}"
+ 57:   echo -e "${DIM}  ──────────────────────────────────────────────────${RESET}"
+ 58:   $DC ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}" 2>/dev/null | \
+ 59:     awk 'NR==1 {print "  "$0} NR>1 {
+ 60:       if ($0 ~ /Up/) printf "  \033[0;32m✔\033[0m %s\n", $0
+ 61:       else if ($0 ~ /Exit|Exited/) printf "  \033[0;31m✘\033[0m %s\n", $0
+ 62:       else printf "  \033[1;33m●\033[0m %s\n", $0
+ 63:     }' || echo -e "${DIM}  (sin contenedores corriendo)${RESET}"
+ 64:   echo ""
+ 65: }
+ 66:
+ 67: print_menu() {
+ 68:   echo -e "${BOLD}  Comandos disponibles:${RESET}"
+ 69:   echo -e "  ${GREEN}[1]${RESET} up       — Levantar servicios"
+ 70:   echo -e "  ${RED}[2]${RESET} down     — Detener y remover servicios"
+ 71:   echo -e "  ${YELLOW}[3]${RESET} restart  — Reiniciar servicios"
+ 72:   echo -e "  ${BLUE}[4]${RESET} build    — Rebuild de imágenes + up"
+ 73:   echo -e "  ${CYAN}[5]${RESET} logs     — Ver logs en tiempo real"
+ 74:   echo -e "  ${MAGENTA}[6]${RESET} status   — Ver estado (ps)"
+ 75:   echo -e "  ${DIM}[0]${RESET} exit     — Salir"
+ 76:   echo ""
+ 77: }
+ 78:
+ 79: print_service_selector() {
+ 80:   echo -e "${BOLD}  Selecciona servicios ${DIM}(Enter = todos)${RESET}${BOLD}:${RESET}"
+ 81:   for i in "${!SERVICES[@]}"; do
+ 82:     echo -e "  ${CYAN}[$((i+1))]${RESET} ${SERVICE_LABELS[$i]}"
+ 83:   done
+ 84:   echo -e "  ${DIM}[a]${RESET} Todos los servicios"
+ 85:   echo ""
+ 86: }
+ 87:
+ 88: # Retorna lista de servicios seleccionados en $SELECTED
+ 89: select_services() {
+ 90:   print_service_selector
+ 91:   echo -ne "${BOLD}  Opción(es) ${DIM}[ej: 1 3 4 | a | Enter para todos]${RESET}${BOLD}: ${RESET}"
+ 92:   read -r raw
+ 93:
+ 94:   SELECTED=()
+ 95:   if [[ -z "$raw" || "$raw" == "a" ]]; then
+ 96:     # todos
+ 97:     return
+ 98:   fi
+ 99:
+100:   for token in $raw; do
+101:     if [[ "$token" =~ ^[0-9]+$ ]]; then
+102:       idx=$((token - 1))
+103:       if [[ $idx -ge 0 && $idx -lt ${#SERVICES[@]} ]]; then
+104:         SELECTED+=("${SERVICES[$idx]}")
+105:       else
+106:         echo -e "${YELLOW}  ⚠ Índice '$token' inválido, ignorado.${RESET}"
+107:       fi
+108:     fi
+109:   done
+110: }
+111:
+112: log_action() {
+113:   local verb="$1"; shift
+114:   echo -e "\n${BOLD}${BLUE}  ┌─ $verb ${DIM}$(date '+%H:%M:%S')${RESET}"
+115:   if [[ ${#@} -gt 0 ]]; then
+116:     echo -e "${BLUE}  │  Servicios: ${CYAN}$*${RESET}"
+117:   else
+118:     echo -e "${BLUE}  │  Servicios: ${CYAN}todos${RESET}"
+119:   fi
+120:   echo -e "${BLUE}  └──────────────────────────────────────────${RESET}\n"
+121: }
+122:
+123: # =============================================================================
+124: # Acciones
+125: # =============================================================================
+126:
+127: do_up() {
+128:   log_action "▲  UP" "$@"
+129:   $DC up -d "$@"
+130:   echo -e "\n${GREEN}  ✔ Servicios levantados.${RESET}"
+131:   print_status
+132: }
+133:
+134: do_down() {
+135:   log_action "▼  DOWN" "$@"
+136:   if [[ ${#@} -eq 0 ]]; then
+137:     $DC down
+138:   else
+139:     $DC stop "$@"
+140:     $DC rm -f "$@"
+141:   fi
+142:   echo -e "\n${RED}  ✔ Servicios detenidos.${RESET}"
+143: }
+144:
+145: do_restart() {
+146:   log_action "↺  RESTART" "$@"
+147:   if [[ ${#@} -eq 0 ]]; then
+148:     $DC restart
+149:   else
+150:     $DC restart "$@"
+151:   fi
+152:   echo -e "\n${YELLOW}  ✔ Servicios reiniciados.${RESET}"
+153:   print_status
+154: }
+155:
+156: do_build() {
+157:   log_action "🔨 BUILD + UP" "$@"
+158:   $DC up -d --build "$@"
+159:   echo -e "\n${BLUE}  ✔ Build completado y servicios levantados.${RESET}"
+160:   print_status
+161: }
+162:
+163: do_logs() {
+164:   log_action "📋 LOGS" "$@"
+165:   echo -e "${DIM}  (Ctrl+C para salir de los logs)${RESET}\n"
+166:   $DC logs -f --tail=100 "$@"
+167: }
+168:
+169: do_status() {
+170:   print_status
+171: }
+172:
+173: # =============================================================================
+174: # Modo no interactivo: ./mu.sh <comando> [servicio...]
+175: # =============================================================================
+176:
+177: run_command() {
+178:   local cmd="$1"; shift
+179:   local svcs=("$@")
+180:
+181:   case "$cmd" in
+182:     up)      do_up      "${svcs[@]}" ;;
+183:     down)    do_down    "${svcs[@]}" ;;
+184:     restart) do_restart "${svcs[@]}" ;;
+185:     build)   do_build   "${svcs[@]}" ;;
+186:     logs)    do_logs    "${svcs[@]}" ;;
+187:     status|ps) do_status ;;
+188:     *)
+189:       echo -e "${RED}  ✘ Comando desconocido: '$cmd'${RESET}"
+190:       echo -e "  Uso: $0 {up|down|restart|build|logs|status} [servicio...]"
+191:       exit 1
+192:       ;;
+193:   esac
+194: }
+195:
+196: # =============================================================================
+197: # Modo interactivo
+198: # =============================================================================
+199:
+200: interactive() {
+201:   while true; do
+202:     clear
+203:     print_banner
+204:     print_status
+205:     print_menu
+206:
+207:     echo -ne "${BOLD}  Comando [0-6]: ${RESET}"
+208:     read -r choice
+209:     echo ""
+210:
+211:     case "$choice" in
+212:       0) echo -e "${DIM}  Hasta luego.${RESET}\n"; exit 0 ;;
+213:       6) do_status; read -rp "  Presiona Enter para continuar..." ;;
+214:       1|2|3|4|5)
+215:         SELECTED=()
+216:         select_services
+217:         case "$choice" in
+218:           1) do_up      "${SELECTED[@]}" ;;
+219:           2) do_down    "${SELECTED[@]}" ;;
+220:           3) do_restart "${SELECTED[@]}" ;;
+221:           4) do_build   "${SELECTED[@]}" ;;
+222:           5) do_logs    "${SELECTED[@]}" ;;
+223:         esac
+224:         echo ""
+225:         read -rp "  Presiona Enter para continuar..." ;;
+226:       *)
+227:         echo -e "${YELLOW}  ⚠ Opción inválida.${RESET}"
+228:         sleep 1 ;;
+229:     esac
+230:   done
+231: }
+232:
+233: # =============================================================================
+234: # Entry point
+235: # =============================================================================
+236:
+237: if [[ $# -ge 1 ]]; then
+238:   # Modo CLI: ./mu.sh up openmu-client
+239:   run_command "$@"
+240: else
+241:   # Modo interactivo
+242:   interactive
+243: fi
+</file>
 
-## File: web/wwwroot/js/index.js
-````javascript
+<file path="repomix.sh">
+1: #!/usr/bin/env bash
+2:
+3: repomix --style xml \
+4:   --output-show-line-numbers \
+5:   --output "./.repomix/context.xml" \
+6:   --split-output=1mb \
+7:   --ignore "**/*.png,**/*.env,**/node_modules/**, **/.repomix/**"
+</file>
+
+<file path="web/wwwroot/js/index.js">
  1: // lang.js fills in the data-i18n text and renders the language buttons; this hook adds
  2: // the index-only content (welcome text + rates table) from content.js on each switch.
  3: window.onLanguageChanged = function (lang) {
@@ -4008,10 +3926,9 @@ repomix.sh
 96: checkOnlinePlayers();
 97: setInterval(checkServerStatus, 30000);
 98: setInterval(checkOnlinePlayers, 30000);
-````
+</file>
 
-## File: web/wwwroot/lang.js
-````javascript
+<file path="web/wwwroot/lang.js">
  1: // Shared language switcher for every page.
  2: //
  3: // Translations stay in SEPARATE per-language files (en.js, es.js, de.js, …); each one adds
@@ -4087,10 +4004,9 @@ repomix.sh
 73:         setLanguage(currentLang());
 74:     }
 75: })();
-````
+</file>
 
-## File: web/wwwroot/template_lang.js
-````javascript
+<file path="web/wwwroot/template_lang.js">
   1: // Skeleton for adding a new interface language. To add e.g. German:
   2: //   1. Copy this file to de.js (or just copy the already-translated en.js).
   3: //   2. Rename the "xx" key below to your language code (e.g. .de).
@@ -4207,10 +4123,9 @@ repomix.sh
 114:     rankingNone: "",
 115:     rankingError: ""
 116: };
-````
+</file>
 
-## File: web/README.md
-````markdown
+<file path="web/README.md">
  1: # openmu-simple-web
  2: This is simple website for OpenMU. 
  3: 
@@ -4301,10 +4216,53 @@ repomix.sh
 88: ---
 89: More info about OpenMU project you will find here:
 90: https://github.com/MUnique/OpenMU
-````
+</file>
 
-## File: web/Pages/Shared/_Layout.cshtml
-````razor
+<file path=".env.example">
+ 1: # Red Config
+ 2: RESOLVE_IP=
+ 3:
+ 4: # Admin Panel Config
+ 5: ADMIN_PANEL_PORT=
+ 6: OPENMU_ADMIN_USER=
+ 7: OPENMU_ADMIN_PASSWORD=
+ 8: OPENMU_ADMIN_TOTP_SECRET=
+ 9: OPENMU_DATA_PATH=
+10:
+11: # Postgres Config
+12: OPENMU_DB_PATH=
+13: POSTGRES_PASSWORD=
+14: POSTGRES_USER=
+15: POSTGRES_DB=
+16:
+17: # Backup Config (Postgres)
+18: OPENMU_BACKUP_PATH=
+19: BACKUP_CRON_SCHEDULE="0 3 * * *"   # Cada 24 horas a las 03:00 AM (sintaxis cron: minuto hora día mes día_semana)
+20: BACKUP_RETENTION_DAYS=7            # Retener backups de los últimos N días
+21: BACKUP_RUN_ON_STARTUP=true         # Realizar un backup al arrancar el contenedor
+22:
+23: # Web Config
+24: WEB_PORT=
+25: DB_HOST=
+26: TIMEZ=
+27:
+28: # Client Config (OpenMu-Client-Babylon)
+29: CLIENT_VITE_PORT=4173   # Puerto del cliente web (vite preview) → http://localhost:4173/online
+30: CLIENT_PROXY_PORT=3000  # Puerto del bridge WS↔TCP
+31: VITE_SERVER_LIST_URL=
+</file>
+
+<file path=".gitignore">
+1: .env
+2: bin/
+3: obj/
+4: web/bin/
+5: web/obj/
+6: **/node_modules
+7: package-lock.json
+</file>
+
+<file path="web/Pages/Shared/_Layout.cshtml">
  1: @inject IConfiguration Configuration
  2: @{
  3:     // Single source of truth for the site languages + default (appsettings.json -> "Site").
@@ -4402,10 +4360,9 @@ repomix.sh
 95: </body>
 96: 
 97: </html>
-````
+</file>
 
-## File: web/wwwroot/content.js
-````javascript
+<file path="web/wwwroot/content.js">
  1: // Server-wide settings shared across pages (not language-specific).
  2: window.muConfig = {
  3:     // Reset cap of the server. Characters who reached it get a glowing reset badge
@@ -4476,10 +4433,9 @@ repomix.sh
 68:         ],
 69:     }
 70: };
-````
+</file>
 
-## File: web/appsettings.json
-````json
+<file path="web/appsettings.json">
  1: {
  2:   "ConnectionStrings": {
  3:     "DefaultConnection": "Host=localhost;Database=openmu;Username=postgres;Password=TwojeHaslo"
@@ -4503,10 +4459,9 @@ repomix.sh
 21:   },
 22:   "AllowedHosts": "*"
 23: }
-````
+</file>
 
-## File: docker-compose.yml
-````yaml
+<file path="docker-compose.yml">
   1: services:
   2:   openmu-startup:
   3:     image: munique/openmu
@@ -4641,4 +4596,6 @@ repomix.sh
 132: 
 133: networks:
 134:   openmu-network:
-````
+</file>
+
+</files>

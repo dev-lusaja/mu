@@ -39,6 +39,32 @@ function escapeHtml(value) {
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+function getProfileImageByClass(className) {
+    if (!className) return '/img/dk_profile.jpeg';
+    const name = className.toLowerCase();
+
+    if (name.includes('wizard') || name.includes('soul') || name.includes('grand') || name.includes('dw') || name.includes('sm') || name.includes('gm')) {
+        return '/img/sm_profile.jpeg';
+    }
+    if (name.includes('knight') || name.includes('blade') || name.includes('dragon') || name.includes('dk') || name.includes('bk') || name.includes('bm')) {
+        return '/img/dk_profile.jpeg';
+    }
+    if (name.includes('elf') || name.includes('muse') || name.includes('high') || name.includes('fe') || name.includes('me') || name.includes('he')) {
+        return '/img/fe_profile.jpeg';
+    }
+    if (name.includes('gladiator') || name.includes('duel') || name.includes('mg') || name.includes('dm')) {
+        return '/img/mg_profile.jpeg';
+    }
+    if (name.includes('lord') || name.includes('emperor') || name.includes('dl') || name.includes('le')) {
+        return '/img/dl_profile.jpeg';
+    }
+    if (name.includes('summoner') || name.includes('bloody') || name.includes('dimension') || name.includes('sum') || name.includes('bs') || name.includes('dim')) {
+        return '/img/dm_profile.jpeg';
+    }
+
+    return '/img/dk_profile.jpeg';
+}
+
 // Custom, themed item tooltip (replaces the native browser title tooltip).
 const itemTooltip = document.getElementById('itemTooltip');
 
@@ -126,6 +152,13 @@ async function loadCharacter(name) {
         }
 
         const data = await response.json();
+
+        // Update character profile picture based on character class name/code
+        const charImg = document.getElementById('charImage');
+        if (charImg) {
+            charImg.src = getProfileImageByClass(data.className);
+            charImg.alt = data.className || 'Character';
+        }
 
         charInfo.innerHTML = `
             <div class="armory-char-name">${escapeHtml(data.name)}</div>

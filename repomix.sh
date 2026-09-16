@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-repomix --style markdown \
+repomix --style xml \
   --output-show-line-numbers \
-  --output "./.repomix/context.md" \
+  --output "./.repomix/context.xml" \
   --split-output=1mb \
-  --ignore "**/*.png,**/*.env,**/node_modules/**"
+  --ignore "**/*.png,**/*.env,**/node_modules/**, **/.repomix/**"
