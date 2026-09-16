@@ -1,32 +1,307 @@
 @page "/"
 @{
-    ViewData["Title"] = "OpenMU";
-    ViewData["ContainerClass"] = "index-container";
+    ViewData["Title"] = "Home - Murio OpenMU";
     ViewData["ActivePage"] = "/";
 }
 
-<div class="index-grid">
-    <div class="index-left">
-        <div class="index-title" id="welcomeTitle">Welcome to OpenMU</div>
-        <div class="index-text" id="welcomeText"></div>
-        <div class="details-list" id="detailsList"></div>
+<!-- SECTION 1: SERVER NEWS -->
+<section class="murio-section news-section">
+    <div class="section-header">
+        <h2 class="section-title"><span class="icon">✦</span> <span data-i18n="newsTitle">SERVER NEWS</span> <span class="icon">✦</span></h2>
     </div>
 
-    <div class="index-right">
-        <div class="index-status-row">
-            <div class="index-status">
-                <div class="status-dot-box" id="indexStatusDot"></div>
-                <div class="status-value" id="indexStatusText">---</div>
-                <div class="status-label" data-i18n="srvStatus">Server Status</div>
+    <div class="news-grid">
+        <article class="news-card featured">
+            <div class="news-img-wrapper">
+                <div class="news-badge" data-i18n="newsBadgePatch">UPDATE</div>
+                <div class="news-img-placeholder patch-img"></div>
             </div>
-            <div class="index-status">
-                <div class="players-value" id="indexPlayersText">0</div>
-                <div class="status-label" data-i18n="playersOnline">Online Players</div>
+            <div class="news-content">
+                <span class="news-date">OCTOBER 24, 2024</span>
+                <h3 class="news-card-title">ARENA OF VALOR AT GAMESCOM</h3>
+                <p class="news-excerpt">Newcomers will feel comfortable with clean, quiet quest systems and thrilling PvP battlegrounds in Season 6.</p>
+                <a href="#readnews" class="btn-news-more" data-i18n="btnMore">READ MORE</a>
+            </div>
+        </article>
+
+        <article class="news-card">
+            <div class="news-img-wrapper">
+                <div class="news-badge event" data-i18n="newsBadgeEvent">EVENT</div>
+                <div class="news-img-placeholder event-img"></div>
+            </div>
+            <div class="news-content">
+                <span class="news-date">OCTOBER 20, 2024</span>
+                <h3 class="news-card-title">CASTLE SIEGE SEASON BEGINS</h3>
+                <p class="news-excerpt">Gather your guild allies and prepare for the ultimate fortress battle every Sunday at 20:00 UTC.</p>
+                <a href="#readnews" class="btn-news-more" data-i18n="btnMore">READ MORE</a>
+            </div>
+        </article>
+
+        <article class="news-card">
+            <div class="news-img-wrapper">
+                <div class="news-badge promo" data-i18n="newsBadgePromo">PROMO</div>
+                <div class="news-img-placeholder promo-img"></div>
+            </div>
+            <div class="news-content">
+                <span class="news-date">OCTOBER 15, 2024</span>
+                <h3 class="news-card-title">WELCOME EXP BOOST +200%</h3>
+                <p class="news-excerpt">New accounts receive special starter gear packages and doubled experience rates during this week.</p>
+                <a href="#readnews" class="btn-news-more" data-i18n="btnMore">READ MORE</a>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- SECTION 2: INFORMATION & WIDGETS GRID -->
+<section class="murio-section info-section">
+    <div class="section-header">
+        <h2 class="section-title"><span class="icon">✦</span> <span data-i18n="infoTitle">INFORMATION</span> <span class="icon">✦</span></h2>
+    </div>
+
+    <div class="info-grid">
+        <!-- Widget 1: Top Rankings Preview -->
+        <div class="murio-widget rankings-widget">
+            <div class="widget-tabs">
+                <button class="wtab-btn active" id="btnTopPlayers" onclick="switchWidgetTab('players')" data-i18n="tabTopPlayers">TOP PLAYERS</button>
+                <button class="wtab-btn" id="btnTopGuilds" onclick="switchWidgetTab('guilds')" data-i18n="tabTopGuilds">TOP GUILDS</button>
+            </div>
+            <div class="widget-body">
+                <!-- Top Players List (Populated via JS endpoint) -->
+                <div id="widgetPlayersList" class="widget-list">
+                    <div class="table-loader" data-i18n="processing">Loading rankings...</div>
+                </div>
+
+                <!-- Top Guilds List (Graphical Mockup) -->
+                <div id="widgetGuildsList" class="widget-list hidden">
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th data-i18n="guildName">Guild</th>
+                                <th data-i18n="guildMaster">Master</th>
+                                <th data-i18n="guildScore">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-num gold">1</span></td>
+                                <td class="guild-name">VALOR</td>
+                                <td>NOVA</td>
+                                <td>8523</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-num silver">2</span></td>
+                                <td class="guild-name">ANARCHY</td>
+                                <td>KRAKEN</td>
+                                <td>7452</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-num bronze">3</span></td>
+                                <td class="guild-name">ENDLESS</td>
+                                <td>P2P</td>
+                                <td>5320</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-num">4</span></td>
+                                <td class="guild-name">LEGENDS</td>
+                                <td>ARAGORN</td>
+                                <td>4120</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="widget-footer">
+                    <a href="/stats" class="widget-link" data-i18n="viewFullRanking">VIEW FULL RANKINGS →</a>
+                </div>
             </div>
         </div>
-        <div id="downloadArea" class="dl-area"></div>
+
+        <!-- Widget 2: Live Server Status & Events Preview -->
+        <div class="murio-widget status-widget">
+            <div class="widget-header">
+                <h3 class="widget-title" data-i18n="srvStatus">SERVER STATUS</h3>
+            </div>
+            <div class="widget-body">
+                <div class="status-summary-box">
+                    <div class="status-indicator">
+                        <div class="status-dot-box" id="indexStatusDot"></div>
+                        <span class="status-value" id="indexStatusText">---</span>
+                    </div>
+                    <div class="online-counter">
+                        <span class="players-value" id="indexPlayersText">0</span>
+                        <span class="status-label" data-i18n="playersOnline">ONLINE PLAYERS</span>
+                    </div>
+                </div>
+
+                <div class="events-preview-box">
+                    <h4 class="mini-box-title" data-i18n="upcomingEvents">UPCOMING EVENTS</h4>
+                    <ul class="mini-events-list">
+                        <li>
+                            <span class="ev-name">Devil Square</span>
+                            <span class="ev-time active">12:00 AM</span>
+                        </li>
+                        <li>
+                            <span class="ev-name">Blood Castle</span>
+                            <span class="ev-time">12:30 AM</span>
+                        </li>
+                        <li>
+                            <span class="ev-name">Chaos Castle</span>
+                            <span class="ev-time">01:00 PM</span>
+                        </li>
+                    </ul>
+                    <a href="/events" class="widget-link" data-i18n="viewEventSchedule">FULL SCHEDULE →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 3: Forum & Community Links -->
+        <div class="murio-widget community-widget">
+            <div class="widget-header">
+                <h3 class="widget-title" data-i18n="communityTitle">COMMUNITY</h3>
+            </div>
+            <div class="widget-body flex-col">
+                <div class="community-banner forum-banner">
+                    <div class="comm-title">FORUM & DISCORD</div>
+                    <p class="comm-sub">Join discussions, guides & trade markets</p>
+                    <a href="https://discord.gg" target="_blank" class="btn-comm">JOIN DISCORD</a>
+                </div>
+
+                <div class="community-banner donate-banner">
+                    <div class="comm-title">DONATION STORE</div>
+                    <p class="comm-sub">Support the server & get VIP rewards</p>
+                    <a href="#donations" class="btn-comm gold">GET VIP</a>
+                </div>
+
+                <div class="social-icons-row">
+                    <a href="#youtube" class="soc-icon yt" title="YouTube">YT</a>
+                    <a href="#facebook" class="soc-icon fb" title="Facebook">FB</a>
+                    <a href="#twitter" class="soc-icon tw" title="Twitter">TW</a>
+                    <a href="#discord" class="soc-icon dc" title="Discord">DC</a>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>
+
+<!-- SECTION 3: CHARACTER CLASSES SHOWCASE -->
+<section class="murio-section char-section">
+    <div class="section-header">
+        <h2 class="section-title"><span class="icon">✦</span> <span data-i18n="charTitle">CHARACTERS</span> <span class="icon">✦</span></h2>
+    </div>
+
+    <div class="char-showcase-container">
+        <div class="char-tabs-bar">
+            <button class="char-tab active" onclick="selectCharClass('dw', this)">DARK WIZARD</button>
+            <button class="char-tab" onclick="selectCharClass('dk', this)">DARK KNIGHT</button>
+            <button class="char-tab" onclick="selectCharClass('fe', this)">FAIRY ELF</button>
+            <button class="char-tab" onclick="selectCharClass('mg', this)">MAGIC GLADIATOR</button>
+            <button class="char-tab" onclick="selectCharClass('dl', this)">DARK LORD</button>
+            <button class="char-tab" onclick="selectCharClass('sum', this)">SUMMONER</button>
+        </div>
+
+        <div class="char-display-card" id="charDisplayCard">
+            <div class="char-info-col">
+                <h3 class="char-class-name" id="charClassName">Dark Wizard</h3>
+                <p class="char-class-desc" id="charClassDesc">
+                    The Dark Wizard knows many power spells that can unleash elemental energies upon enemies.
+                    Mastering offensive spellcraft, they are powerful ranged attackers that destroy whole armies of monsters.
+                </p>
+
+                <div class="char-stats-progress">
+                    <div class="char-stat-row">
+                        <span class="stat-lbl">Magic Power</span>
+                        <div class="progress-bar"><div class="fill" id="statFill1" style="width: 95%;"></div></div>
+                        <span class="stat-pct">95%</span>
+                    </div>
+                    <div class="char-stat-row">
+                        <span class="stat-lbl">Defense</span>
+                        <div class="progress-bar"><div class="fill" id="statFill2" style="width: 45%;"></div></div>
+                        <span class="stat-pct">45%</span>
+                    </div>
+                    <div class="char-stat-row">
+                        <span class="stat-lbl">Attack Speed</span>
+                        <div class="progress-bar"><div class="fill" id="statFill3" style="width: 80%;"></div></div>
+                        <span class="stat-pct">80%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="char-portrait-col">
+                <div class="char-portrait-frame" id="charPortraitFrame">
+                    <div class="char-class-avatar dw-avatar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 4: DOWNLOADS & SYSTEM REQUIREMENTS -->
+<section class="murio-section downloads-section" id="downloads">
+    <div class="section-header">
+        <h2 class="section-title"><span class="icon">✦</span> <span data-i18n="dlSectionTitle">DOWNLOAD GAME & CLIENT</span> <span class="icon">✦</span></h2>
+    </div>
+
+    <!-- Live Download Area -->
+    <div class="download-main-box">
+        <div class="dl-left-info">
+            <h3 class="dl-box-title" data-i18n="dlClientTitle">FULL GAME CLIENT (SEASON 6)</h3>
+            <p class="dl-box-desc" data-i18n="dlClientDesc">Includes all sound effects, high-resolution textures, anti-cheat protection and auto-updater.</p>
+            <span class="dl-file-size">File Size: 1.5 GB</span>
+        </div>
+        <div class="dl-right-actions" id="downloadArea">
+            <!-- Rendered by js/index.js -->
+        </div>
+    </div>
+
+    <!-- System Requirements Graphic Mockup -->
+    <div class="sys-req-container">
+        <h3 class="sys-req-title" data-i18n="sysReqTitle">✦ SYSTEM REQUIREMENTS ✦</h3>
+        <table class="sys-req-table">
+            <thead>
+                <tr>
+                    <th data-i18n="sysReqComponent">Components</th>
+                    <th data-i18n="sysReqMinimum">Minimum</th>
+                    <th data-i18n="sysReqRecommended">Recommended</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="comp-name">Processor</td>
+                    <td>2.8 GHz CPU</td>
+                    <td>3.5 GHz Dual Core</td>
+                </tr>
+                <tr>
+                    <td class="comp-name">Memory (RAM)</td>
+                    <td>2 GB RAM</td>
+                    <td>4 GB RAM</td>
+                </tr>
+                <tr>
+                    <td class="comp-name">Operating System</td>
+                    <td>Windows 7 / 8 / 10</td>
+                    <td>Windows 10 / 11</td>
+                </tr>
+                <tr>
+                    <td class="comp-name">Video Card</td>
+                    <td>256 MB DirectX 9.0c</td>
+                    <td>512 MB DirectX 11</td>
+                </tr>
+                <tr>
+                    <td class="comp-name">Network Connection</td>
+                    <td>1 Mbps ADSL</td>
+                    <td>2 Mbps+ Broadband</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Driver Logos Graphical Row -->
+        <div class="drivers-row">
+            <div class="driver-card">NVIDIA GeForce</div>
+            <div class="driver-card">Microsoft DirectX</div>
+            <div class="driver-card">AMD Radeon</div>
+        </div>
+    </div>
+</section>
 
 @section Styles {
     <link rel="stylesheet" href="/css/index.css">

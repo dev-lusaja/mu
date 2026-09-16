@@ -1,33 +1,36 @@
 @page "/changepass"
 @{
-    ViewData["Title"] = "OpenMU - Change Password";
+    ViewData["Title"] = "Change Password - Murio OpenMU";
 }
 
-<h2 data-i18n="titleChange">Change Password</h2>
-<form id="changePassForm">
-    <div class="form-group">
-        <label data-i18n="login">Login</label>
-        <input type="text" name="username" required data-i18n-placeholder="placeholderLogin">
-    </div>
-    <div class="form-group">
-        <label data-i18n="oldPass">Current Password</label>
-        <input type="password" name="oldPassword" required data-i18n-placeholder="placeholderPass">
-    </div>
-    <div class="form-group">
-        <label data-i18n="newPass">New Password</label>
-        <input type="password" name="newPassword" required minlength="8" maxlength="16"
-               data-i18n-placeholder="placeholderPass">
-    </div>
-    <button type="submit" id="submitBtn">
-        <span id="btnText" data-i18n="btnChange">Update Password</span>
-        <div id="btnLoader" class="spinner-loader"></div>
-    </button>
-</form>
-<div id="message"></div>
+<div class="murio-account-wrapper">
+    <div class="murio-card account-card">
+        <div class="section-header">
+            <h2 class="section-title"><span class="icon">✦</span> <span data-i18n="titleChange">CHANGE PASSWORD</span> <span class="icon">✦</span></h2>
+        </div>
 
-@section FooterNav {
-    <a href="/" class="nav-link"><span data-i18n="navHome">Home</span></a>
-}
+        <form id="changePassForm">
+            <div class="form-group">
+                <label data-i18n="login">Login</label>
+                <input type="text" name="username" required data-i18n-placeholder="placeholderLogin">
+            </div>
+            <div class="form-group">
+                <label data-i18n="oldPass">Current Password</label>
+                <input type="password" name="oldPassword" required data-i18n-placeholder="placeholderPass">
+            </div>
+            <div class="form-group">
+                <label data-i18n="newPass">New Password</label>
+                <input type="password" name="newPassword" required minlength="8" maxlength="16"
+                       data-i18n-placeholder="placeholderPass">
+            </div>
+            <button type="submit" id="submitBtn" class="btn-murio">
+                <span id="btnText" data-i18n="btnChange">Update Password</span>
+                <div id="btnLoader" class="spinner-loader"></div>
+            </button>
+        </form>
+        <div id="message"></div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="/js/changepass.js"></script>
